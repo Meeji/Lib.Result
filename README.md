@@ -22,13 +22,13 @@ public static Result<Customer, string> GetCustomer(int id)
 Once we've got a ```Result``` type in hand it can be handled in several ways. The result type forces us to explicitly handle the possibility of an error state (even if we only handle it by saying 'assume success or throw'):
 
 ```csharp
-// Give the type an Action perform on either success or failure case
+// Give the type an Action to perform on success, and another on failure
 var customerResult = GetCustomer(10);
 customerResult.Do(
     onSuccess: customer => Console.WriteLine($"Customer name is: {customer.Name}"),
     onFailure: error    => Console.WriteLine($"Error! {error}"));
 
-// If handed Funcs instead the results can be assigned:
+// If passed Funcs the results can be assigned:
 var gotCustomer = customerResult.Do(
     customer => true,
     error    => false);
@@ -37,7 +37,8 @@ var gotCustomer = customerResult.Do(
 gotCustomer = customerResult.IsSuccess;
 gotCustomer = !customerResult.IsFailure;
 
-// We can assume success and attempt to unwrap the inner value. This will throw if our assumption is incorrect.
+// We can assume success and attempt to unwrap the inner value.
+//This will throw if our assumption is incorrect.
 var customer = customerResult.Unwrap();
 
 // We can also perform this operation by casting
@@ -49,7 +50,8 @@ customer = customerResult.UnwrapOr(null);
 // Or lazily if calculating the default is an expensive operation
 customer = customerResult.UnwrapOr(() => new Customer);
 
-// We can also assume there was an error. This unwraps the 'failure' value or throws if the result represents a success.
+// We can also assume there was an error.
+//This unwraps the 'failure' value or throws if the result represents a success.
 var error = customerResult.UnwrapError();
 ```
 
@@ -62,7 +64,7 @@ var successFive = (Result<int, string>)five; // Could also have used 'new Succes
 var successTen = successFive.Bind(i => i + 5); // Value is accessed without unwrapping
 successTen.Unwrap(); // 10!
 
-var failureFive = (Result<int, string>)"some error"; // Could also have used 'new Failure<int, string>("some error")';
+var failureFive = (Result<int, string>)"some error"; // 'new Failure<int, string>("some error")';
 var failureTen = failureFive.Bind(i => i + 5); // Value is mutated without unwrapping
 failureTen.UnwrapError(); // "some error"!
 ```
@@ -104,7 +106,8 @@ Yes, I know. You wouldn't actually write code like that. But it illustrates how 
 
 ```csharp
 public static IList<Order> GetOrdersForCustomer(int id) {
-    // BindToResult works like Bind, but expects a Result<TSuccess, TFailure> where TFailure matches with the current Result
+    // BindToResult works like Bind, but expects a Result<TSuccess, TFailure>
+    // where TFailure matches with the current Result
     return GetCustomer(id)        // We have a Result<Customer, TFailure>
         .BindToResult(GetAddress) // Now a Result<Address, TFailure>
         .BindToResult(GetOrders)  // And now a Result<IList<Orders>, TFailure>
@@ -119,8 +122,10 @@ Earlier I said a ```Result``` can represent the result of a task, or the task it
 
 ```csharp
 var eagerCustomer = GetCustomer();
-Result<Customer, string> lazyCustomer = LazyResult.Create(GetCustomer); // Converts normal Result into LazyResult
-// eagerCustomer and lazyCustomer are both Result<Customer, string>, but eagerCustomer has already calculated it's value.
+// Converts normal Result into LazyResult
+Result<Customer, string> lazyCustomer = LazyResult.Create(GetCustomer);
+// eagerCustomer and lazyCustomer are both Result<Customer, string>
+// But eagerCustomer has already calculated it's value.
 
 var eagerName = eagerCustomer.Bind(c => c.Name); // Bind is performed immediately
 var lazyName = lazyCustomer.Bind(c => c.Name);   // Bind is deferred
