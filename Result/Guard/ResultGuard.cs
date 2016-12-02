@@ -1,4 +1,4 @@
-namespace Result.Guard
+namespace Result
 {
     using System;
     using System.Collections.Generic;

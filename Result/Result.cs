@@ -4,8 +4,6 @@
 
     using CoreUtils;
 
-    using Result.Guard;
-
     public abstract partial class Result<TSuccess, TFailure> : IResult<TSuccess, TFailure>
     {
         public abstract bool IsSuccess { get; }

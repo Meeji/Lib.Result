@@ -2,8 +2,6 @@ namespace Result
 {
     using System;
 
-    using Result.Guard;
-
     public interface IResult<TSuccess, TFailure>
     {
         bool IsSuccess { get; }
