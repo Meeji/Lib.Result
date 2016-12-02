@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Result</id>
+    <version>1.0.0</version>
+    <description>Result type</description>
+    <authors>BrainJuicer</authors>
+    <owners>BrainJuicer</owners>
+    <title>Result</title>
+    <projectUrl>https://github.com/Brainjuicer2/Result</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/Brainjuicer2/Result/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="CoreUtils" version="1.0.0"></dependency>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\release\result.dll" target="lib\Result.dll" />
+  </files>
+</package>
