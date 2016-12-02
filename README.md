@@ -147,5 +147,27 @@ customerFive.UnwrapOrThrow();
 
 NOTE: The ```TryResult``` is not as lazy as a LazyResult. It'll get the value on ```Bind``` and ```Combine```.
 
+## ```Guard```
+Using a guard allows for advanced matching on the inner success and failure values of a result type.
+
+```csharp
+var result = new Success<int, string>(10).Guard()
+  .Success() // Set up some success paths (we could also have set up failure paths)
+  .Where(
+      s => s == 5,                  // if success value is 5
+      s => s.ToString() + " is 5!") // return a string "5 is 5!"
+  .Where(s => s % 2 == 0, s => s.ToString() + " is even!")
+  .Where(s => s < 0, i => s.ToString() + " is a negative number!")
+  .Default(s => s + " is just some number") // We need to provide a default
+  .Failure() // Since we "closed" successes we can't go back later to add more paths
+  .Where(f => f.Length > 100, f => "Something very involved happened")
+  .Where(f => i.StartsWith("Error"), f => "An error occurred: " + f)
+  .Default(f => f + " is just some string")
+  //// .Success() // Will not work - we've already defined our success paths!
+  .Do();          // Both defaults have been defined, only Do() is left to run
+
+Assert.That(result == "10 is even!");
+```
+
 ## Ahh! So ```Result``` is a Monad then?
 Yes. No. Maybe? I don't know. If you have a better understanding of monads than I do (and you probably do) please let me know. Answers on a postcard.
