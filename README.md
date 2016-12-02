@@ -1,9 +1,9 @@
 # Result
 C# type that represents either the result of a task that may succeed, or the task itself. Similar to Result types in functional languages.
 
-In some cases a method can be reasonably expected to fail - for instance if it attempts to read a file that may not exist, or accesses a network resource that may not be available. In these cases C# offers several patterns to deal with that method, but these are often verbose or unsuitable for many use cases.
+In some cases a method can be reasonably expected to fail - for instance if it attempts to read a file that may not exist, or accesses a network resource that may not be available. In these cases C# offers several patterns to deal with that method, but these are often verbose or unsuitable for many use cases. Consider returning a ```Result```!
 
-## Learn by Example
+## By Example
 Consider the following method definition, which emulates a database call with a 1% chance of failing:
 
 ```csharp
@@ -55,7 +55,7 @@ customer = customerResult.UnwrapOr(() => new Customer);
 var error = customerResult.UnwrapError();
 ```
 
-## Result workflow
+## ```Result``` workflow
 The ```Result``` type allows you to 'use' the inner value without unwrapping it using several ```Bind``` methods.
 
 ```csharp
@@ -117,7 +117,7 @@ public static IList<Order> GetOrdersForCustomer(int id) {
 
 This compresses the code by removing a lot of boilerplate and moves the error handling to a single place. This style of pushing errors down to the end of the method and handling them there has been called 'railway oriented programming' and Scott Wlaschin did a brilliant talk on it you can find [here|https://vimeo.com/113707214] if you're interested.
 
-## LazyResult
+## ```LazyResult```
 Earlier I said a ```Result``` can represent the result of a task, or the task itself. If you want the result to wrap the task, unperformed, you need a ```LazyResult```
 
 ```csharp
@@ -135,7 +135,7 @@ lazyName.UnWrap();  // Work is done here
 // if the LazyResult is unwrapped again the work is NOT done again - you get the same value
 ```
 
-## TryResult
+## ```TryResult```
 You can convert a method that might throw into a Result using TryResult
 
 ```csharp
