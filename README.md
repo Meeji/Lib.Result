@@ -116,7 +116,7 @@ public static IList<Order> GetOrdersForCustomer(int id) {
 }
 ```
 
-This compresses the code by removing a lot of boilerplate and moves the error handling to a single place. This style of pushing errors down to the end of the method and handling them there has been called 'railway oriented programming' and Scott Wlaschin did a brilliant talk on it you can find (here)[https://vimeo.com/113707214] if you're interested.
+This compresses the code by removing a lot of boilerplate and moves the error handling to a single place. This style of pushing errors down to the end of the method and handling them there has been called 'railway oriented programming' and Scott Wlaschin did a brilliant talk on it you can find [here](https://vimeo.com/113707214) if you're interested.
 
 ## ```LazyResult```
 Earlier I said a ```Result``` can represent the result of a task, or the task itself. If you want the result to wrap the task, unperformed, you need a ```LazyResult```
