@@ -1,12 +1,7 @@
 ﻿namespace Result
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-
     using CoreUtils;
-
-    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1100:DoNotPrefixCallsWithBaseUnlessLocalImplementationExists",
-        Justification = "Obeying rule makes all methods recursive and causes stack overflow exceptions. Stupid rule.")]
 
     public class LazyResult<TSuccess, TFailure> : Result<TSuccess, TFailure>
     {
