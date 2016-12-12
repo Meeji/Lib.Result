@@ -17,7 +17,6 @@ namespace Result
     {
         private readonly Result<TSuccess, TFailure> innerResult;
 
-
         private readonly List<CheckAndCall<TSuccess>> successCalls = new List<CheckAndCall<TSuccess>>();
 
         private readonly List<CheckAndCall<TFailure>> failureCalls = new List<CheckAndCall<TFailure>>();
