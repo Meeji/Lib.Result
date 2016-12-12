@@ -123,7 +123,8 @@
             }
         }
 
-        public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result) where TFailure : Exception
+        public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+            where TFailure : Exception
         {
             Throw.IfNull(result, nameof(result));
             return result.UnwrapOr(exc => { throw exc; });

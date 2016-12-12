@@ -6,7 +6,7 @@ namespace Result
 
     using CoreUtils;
 
-    public class ResultGuard<TSuccess, TFailure, TOut> : IGuardEntryPoint<TSuccess, TFailure, TOut>,
+    public sealed class ResultGuard<TSuccess, TFailure, TOut> : IGuardEntryPoint<TSuccess, TFailure, TOut>,
                                                          IGuardAllClosing<TOut>,
                                                          IGuardSuccess<TSuccess, TFailure, TOut>,
                                                          IGuardSuccessOpen<TSuccess, TFailure, TOut>,
