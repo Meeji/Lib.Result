@@ -1,7 +1,6 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System.Collections.Generic;
-
     using NUnit.Framework;
 
     [TestFixture]
@@ -15,12 +14,12 @@
             Assert.AreEqual(result.Unwrap(), 1);
         }
 
-        [TestCase(null, ExpectedResult = "SingleAsResult called on null collection", TestName = "Null Collection")]
-        [TestCase(new int[0], ExpectedResult = "SingleAsResult called on collection with no elements", TestName = "Empty Collection")]
-        [TestCase(new[] { 1, 2, 3 }, ExpectedResult = "SingleAsResult called on collection with more than one element", TestName = "Multi-item Collection")]
-        public string ErrorCases(IEnumerable<int> collection)
+        [TestCase(null, "SingleAsResult called on null collection", TestName = "Null Collection")]
+        [TestCase(new int[0], "SingleAsResult called on collection with no elements", TestName = "Empty Collection")]
+        [TestCase(new[] { 1, 2, 3 }, "SingleAsResult called on collection with more than one element", TestName = "Multi-item Collection")]
+        public void ErrorCases(IEnumerable<int> collection, string expectedResult)
         {
-            return collection.SingleAsResult().UnwrapError();
+            Assert.That(collection.SingleAsResult().UnwrapError(), Is.EqualTo(expectedResult));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using NUnit.Framework;
 
@@ -19,7 +19,7 @@
                 .Where(i => i % 2 == 0, i => i.ToString() + " is even!")
                 .Where(i => i < 0, i => i.ToString() + " is a negative number!")
                 .Default(i => i + " is just some number") //// To start defining failure paths we NEED to provide a default value
-                .Failure()                                //// Since we "closed" successes when we defined a default we can't go back later to add more paths
+                .Failure() //// Since we "closed" successes when we defined a default we can't go back later to add more paths
                 .Where(i => i.Length > 100, i => i + " is a long message")
                 .Where(i => i.StartsWith("Error"), i => "An error occurred: " + i)
                 .Default(i => i + " is just some message") //// For safety we have to provide both a success and failure default so no paths are left uncovered

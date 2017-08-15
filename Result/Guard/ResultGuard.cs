@@ -1,9 +1,8 @@
-namespace Result
+namespace System1Group.Core.Result
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using CoreUtils;
 
     public sealed class ResultGuard<TSuccess, TFailure, TOut> : IGuardEntryPoint<TSuccess, TFailure, TOut>,

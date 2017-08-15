@@ -1,7 +1,6 @@
-﻿namespace Result
+﻿namespace System1Group.Core.Result
 {
     using System;
-
     using CoreUtils;
 
     public class RepeatingTryResult<TSuccess> : Result<TSuccess, Exception>
@@ -10,12 +9,12 @@
 
         public RepeatingTryResult(Func<TSuccess> factory)
         {
-            this.factory = ReturnParameter.OrThrowIfNull(factory, nameof(factory));
+            this.factory = ReturnParameter.OrThrowIfNull(factory, "factory");
         }
 
         public override bool IsSuccess => this.TryRunFactory().IsSuccess;
 
-        public override TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<Exception, TReturn> onFailure)
+        public override TReturn Do<TReturn>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<Exception, TReturn> onFailure)
         {
             return this.TryRunFactory().Do(onSuccess, onFailure);
         }

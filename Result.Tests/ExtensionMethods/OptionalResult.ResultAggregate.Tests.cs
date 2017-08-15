@@ -1,11 +1,8 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System;
     using System.Collections.Generic;
-
     using NUnit.Framework;
-
-    using Result;
 
     [TestFixture]
     public class OptionalResult_ResultAggregate_Tests
@@ -15,8 +12,8 @@
         {
             var results = new Result<int, string>[]
                               {
-                                  new Success<int, string>(5), 
-                                  new Success<int, string>(7), 
+                                  new Success<int, string>(5),
+                                  new Success<int, string>(7),
                                   new Success<int, string>(9)
                               };
             var expectedArray = new[] { 5, 7, 9 };
@@ -36,8 +33,8 @@
         {
             var results = new Result<int, string>[]
                               {
-                                  new Success<int, string>(5), 
-                                  new Success<int, string>(7), 
+                                  new Success<int, string>(5),
+                                  new Success<int, string>(7),
                                   new Success<int, string>(9)
                               };
 
@@ -51,8 +48,8 @@
         {
             var results = new Result<int, string>[]
                               {
-                                  new Success<int, string>(5), 
-                                  new Success<int, string>(7), 
+                                  new Success<int, string>(5),
+                                  new Success<int, string>(7),
                                   new Success<int, string>(9),
                                   new Failure<int, string>("Error!"),
                               };

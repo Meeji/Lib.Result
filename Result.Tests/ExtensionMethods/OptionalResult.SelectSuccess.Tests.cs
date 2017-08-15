@@ -1,4 +1,4 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using NUnit.Framework;
 
@@ -10,11 +10,11 @@
         {
             var results = new Result<int, string>[]
                               {
-                                  new Failure<int, string>("foo"), 
-                                  new Success<int, string>(5), 
-                                  new Failure<int, string>("foo"), 
-                                  new Success<int, string>(7), 
-                                  new Failure<int, string>("foo"), 
+                                  new Failure<int, string>("foo"),
+                                  new Success<int, string>(5),
+                                  new Failure<int, string>("foo"),
+                                  new Success<int, string>(7),
+                                  new Failure<int, string>("foo"),
                                   new Success<int, string>(9)
                               };
             var expectedArray = new[] { 5, 7, 9 };
