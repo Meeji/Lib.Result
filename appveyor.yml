@@ -12,11 +12,12 @@ assembly_info:
 nuget:
   account_feed: true
   project_feed: true
+  disable_publish_on_pr: true
 before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
 after_build:
-- ps: ls *\**.nuspec | % { nuget.exe pack $_ -Version $env:APPVEYOR_BUILD_VERSION }
+- ps: nuget pack Result\Result.csproj -Version $env:appveyor_build_version -IncludeReferencedProjects
 artifacts:
 - path: '*.nupkg'

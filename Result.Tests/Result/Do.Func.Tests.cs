@@ -1,7 +1,6 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System;
-
     using NUnit.Framework;
 
     [TestFixture]
@@ -14,7 +13,7 @@
         private readonly Result<object, string> failure = new Failure<object, string>(Error);
 
         private readonly Result<object, string> success = new Success<object, string>(Obj);
-        
+
         [Test]
         public void Success_Ok()
         {

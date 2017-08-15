@@ -1,36 +1,35 @@
-﻿namespace Result
+﻿namespace System1Group.Core.Result
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-
     using CoreUtils;
 
     public static class ExtensionMethods
     {
         public static IEnumerable<T> SelectSuccess<T, TF>(this IEnumerable<Result<T, TF>> values)
         {
-            Throw.IfNull(values, nameof(values));
+            Throw.IfNull(values, "values");
             return values.Where(a => a.IsSuccess).Select(a => a.Unwrap());
         }
 
         public static IEnumerable<TF> SelectFailure<T, TF>(this IEnumerable<Result<T, TF>> values)
         {
-            Throw.IfNull(values, nameof(values));
+            Throw.IfNull(values, "values");
             return values.Where(a => a.IsFailure).Select(a => a.UnwrapError());
         }
 
         public static Result<IEnumerable<TSuccess>, TFailure> UnwrapAll<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> values)
         {
-            Throw.IfNull(values, nameof(values));
+            Throw.IfNull(values, "values");
 
             var outList = new List<TSuccess>();
             foreach (var val in values)
             {
                 if (val.IsSuccess)
                 {
-                    outList.Add(val);
+                    outList.Add(val.Unwrap());
                 }
                 else
                 {
@@ -41,7 +40,7 @@
             return outList;
         }
 
-        public static Result<TValue, string> TryGetValueAsResult<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+        public static Result<TValue, string> TryGetValueAsResult<TKey, TValue>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] this IDictionary<TKey, TValue> dict, TKey key)
         {
             if (dict == null)
             {
@@ -54,16 +53,16 @@
                 return outValue;
             }
 
-            return $"Dictionary does not contain key: {key}";
+            return string.Format("Dictionary does not contain key: {0}", key);
         }
 
         public static Result<TOutput, TFailure> ResultAggregate<TSuccess, TFailure, TOutput>(
             this IEnumerable<Result<TSuccess, TFailure>> values,
-            TOutput aggregateBase,
+            [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] TOutput aggregateBase,
             Func<TOutput, TSuccess, TOutput> func)
         {
-            Throw.IfNull(values, nameof(values));
-            Throw.IfNull(func, nameof(func));
+            Throw.IfNull(values, "values");
+            Throw.IfNull(func, "func");
 
             return values.Aggregate((Result<TOutput, TFailure>)aggregateBase, (output, item) => output.Combine(item, func));
         }
@@ -76,7 +75,7 @@
         }
 
         [ExcludeFromCodeCoverage]
-        public static Result<T, string> SingleAsResult<T>(this IQueryable<T> values)
+        public static Result<T, string> SingleAsResult<T>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] this IQueryable<T> values)
         {
             if (values == null)
             {
@@ -99,7 +98,7 @@
             return list[0];
         }
 
-        public static Result<T, string> SingleAsResult<T>(this IEnumerable<T> values)
+        public static Result<T, string> SingleAsResult<T>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] this IEnumerable<T> values)
         {
             if (values == null)
             {
@@ -123,11 +122,50 @@
             }
         }
 
+        [System1Group.Core.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
             where TFailure : Exception
         {
-            Throw.IfNull(result, nameof(result));
+            Throw.IfNull(result, "result");
             return result.UnwrapOr(exc => { throw exc; });
+        }
+
+        [System1Group.Core.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static LazyResult<TSuccess, TFailure> MakeLazy<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result as LazyResult<TSuccess, TFailure> ?? new LazyResult<TSuccess, TFailure>(() => result);
+        }
+
+        [System1Group.Core.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(this Result<Result<TSuccess, TFailure>, TFailure> result)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.BindToResult(t => t);
+        }
+
+        [System1Group.Core.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(this Result<TSuccess, TFailure> result, TFailureNew newValue)
+        {
+            return result.Do<Result<TSuccess, TFailureNew>>(success => success, _ => newValue);
+        }
+
+        [System1Group.Core.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
+            this Result<TSuccess, TFailure> result,
+            Func<TFailureNew> newValue)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.Do<Result<TSuccess, TFailureNew>>(success => success, _ => newValue);
+        }
+
+        [System1Group.Core.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
+            this Result<TSuccess, TFailure> result,
+            Func<TFailure, TFailureNew> newValue)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.Do<Result<TSuccess, TFailureNew>>(success => success, failure => newValue(failure));
         }
     }
 }

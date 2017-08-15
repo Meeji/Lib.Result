@@ -1,7 +1,6 @@
-﻿namespace Result
+﻿namespace System1Group.Core.Result
 {
     using System;
-
     using CoreUtils;
 
     public class TryResult<TSuccess> : Result<TSuccess, Exception>
@@ -10,13 +9,13 @@
 
         public TryResult(Func<TSuccess> factory)
         {
-            Throw.IfNull(factory, nameof(factory));
+            Throw.IfNull(factory, "factory");
             this.lazyValue = LazyValue.Create(() => TryRunFactory(factory));
         }
 
         public override bool IsSuccess => this.lazyValue.Value.IsSuccess;
 
-        public override TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<Exception, TReturn> onFailure)
+        public override TReturn Do<TReturn>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<Exception, TReturn> onFailure)
         {
             return this.lazyValue.Value.Do(onSuccess, onFailure);
         }

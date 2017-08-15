@@ -1,7 +1,6 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System.Linq;
-
     using NUnit.Framework;
 
     [TestFixture]

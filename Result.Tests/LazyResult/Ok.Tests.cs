@@ -1,7 +1,6 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System;
-
     using NUnit.Framework;
 
     [TestFixture]
@@ -21,7 +20,7 @@
             var result = LazyResult.Create(factory);
 
             Assert.AreEqual(calls, 0);
-            
+
             Assert.AreEqual(result.Unwrap(), 1);
             Assert.AreEqual(calls, 1);
 

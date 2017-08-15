@@ -1,7 +1,6 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System.Collections.Generic;
-
     using NUnit.Framework;
 
     [TestFixture]

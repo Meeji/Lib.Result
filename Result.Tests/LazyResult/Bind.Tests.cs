@@ -1,8 +1,7 @@
-﻿namespace Result.Tests
+﻿namespace System1Group.Core.Result.Tests
 {
     using System;
     using System.Globalization;
-
     using NUnit.Framework;
 
     [TestFixture]

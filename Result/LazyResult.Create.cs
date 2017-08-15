@@ -1,4 +1,4 @@
-﻿namespace Result
+﻿namespace System1Group.Core.Result
 {
     using System;
 
