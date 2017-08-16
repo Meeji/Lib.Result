@@ -1,4 +1,4 @@
-﻿namespace System1Group.Core.Result
+﻿namespace System1Group.Lib.Result
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -21,7 +21,7 @@
 
         public override bool IsSuccess => this.lazyResult.Value.IsSuccess;
 
-        public override TReturn Do<TReturn>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<TFailure, TReturn> onFailure)
+        public override TReturn Do<TReturn>([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Func<TFailure, TReturn> onFailure)
         {
             return this.lazyResult.Value.Do(onSuccess, onFailure);
         }
@@ -39,21 +39,21 @@
         }
 
         [Obsolete("Use Combine<Result, Function> or CombineToResult instead")]
-        public override Result<TSuccess, TFailure> Combine<TCombine>([System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
+        public override Result<TSuccess, TFailure> Combine<TCombine>([System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));
             Throw.IfNull(combineUsing, nameof(combineUsing));
             return LazyResult.Create(() => base.Combine(combineWith, combineUsing));
         }
 
-        public override Result<TReturn, TFailure> Combine<TReturn, TCombine>([System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Func<TSuccess, TCombine, TReturn> combineUsing)
+        public override Result<TReturn, TFailure> Combine<TReturn, TCombine>([System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Func<TSuccess, TCombine, TReturn> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));
             Throw.IfNull(combineUsing, nameof(combineUsing));
             return LazyResult.Create(() => base.Combine(combineWith, combineUsing));
         }
 
-        public override Result<TReturn, TFailure> CombineToResult<TReturn, TCombine>([System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Func<TSuccess, TCombine, Result<TReturn, TFailure>> combineUsing)
+        public override Result<TReturn, TFailure> CombineToResult<TReturn, TCombine>([System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Func<TSuccess, TCombine, Result<TReturn, TFailure>> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));
             Throw.IfNull(combineUsing, nameof(combineUsing));

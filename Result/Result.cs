@@ -1,4 +1,4 @@
-﻿namespace System1Group.Core.Result
+﻿namespace System1Group.Lib.Result
 {
     using System;
     using CoreUtils;
@@ -11,7 +11,7 @@
 
         public abstract TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure);
 
-        public virtual void Do([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Action<TSuccess> onSuccess, [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Action<TFailure> onFailure)
+        public virtual void Do([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Action<TSuccess> onSuccess, [System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Action<TFailure> onFailure)
         {
             Func<TSuccess, object> wrappedSuccess = null;
             Func<TFailure, object> wrappedFailure = null;
@@ -42,7 +42,7 @@
             return this.Unwrap(null);
         }
 
-        public virtual TSuccess Unwrap([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error)
+        public virtual TSuccess Unwrap([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error)
         {
             return this.Do(
                 item => item,
@@ -58,7 +58,7 @@
             return this.UnwrapError(null);
         }
 
-        public virtual TFailure UnwrapError([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error)
+        public virtual TFailure UnwrapError([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error)
         {
             return this.Do(
                 item =>
@@ -68,7 +68,7 @@
                 err => err);
         }
 
-        public virtual TSuccess UnwrapOr([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull, System1Group.Core.Attributes.ParameterGeneration.UseNullWhenAutomating] TSuccess defaultItem)
+        public virtual TSuccess UnwrapOr([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull, System1Group.Lib.Attributes.ParameterGeneration.UseNullWhenAutomating] TSuccess defaultItem)
         {
             return this.Do(item => item, err => defaultItem);
         }
@@ -98,7 +98,7 @@
         }
 
         public virtual Result<TReturn, TFailure> Combine<TReturn, TCombine>(
-            [System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
+            [System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
             Func<TSuccess, TCombine, TReturn> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));
@@ -107,7 +107,7 @@
         }
 
         [Obsolete("Use Combine<Result, Function> or CombineToResult instead")]
-        public virtual Result<TSuccess, TFailure> Combine<TCombine>([System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
+        public virtual Result<TSuccess, TFailure> Combine<TCombine>([System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));
             Throw.IfNull(combineUsing, nameof(combineUsing));
@@ -121,7 +121,7 @@
         }
 
         public virtual Result<TReturn, TFailure> CombineToResult<TReturn, TCombine>(
-            [System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
+            [System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
             Func<TSuccess, TCombine, Result<TReturn, TFailure>> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));

@@ -1,4 +1,4 @@
-﻿namespace System1Group.Core.Result.Tests
+﻿namespace System1Group.Lib.Result.Tests
 {
     using System.Collections.Generic;
     using NUnit.Framework;

@@ -18,6 +18,6 @@ before_build:
 build:
   verbosity: minimal
 after_build:
-- ps: nuget pack Result\Result.csproj -Version $env:appveyor_build_version -IncludeReferencedProjects
+- ps: nuget pack Result\System1Group.Lib.Result.csproj -Version $env:appveyor_build_version -IncludeReferencedProjects
 artifacts:
 - path: '*.nupkg'

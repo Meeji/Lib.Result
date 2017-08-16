@@ -1,9 +1,9 @@
-﻿namespace System1Group.Core.Result.Tests.ResultOptionInteropExtensions
+﻿namespace System1Group.Lib.Result.Tests.ResultOptionInteropExtensions
 {
     using NUnit.Framework;
     using Optional;
     using Optional.Unsafe;
-    using System1Group.Core.Result.ResultOptionInteropExtensions;
+    using System1Group.Lib.Result.ResultOptionInteropExtensions;
 
     [TestFixture]
     public class Result_ResultOptionInteropExtensions_Tests

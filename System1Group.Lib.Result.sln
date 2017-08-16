@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Result", "Result\Result.csproj", "{BE9AEB87-C2B6-4642-B63B-96ADBF2EF890}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System1Group.Lib.Result", "Result\System1Group.Lib.Result.csproj", "{BE9AEB87-C2B6-4642-B63B-96ADBF2EF890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Result.Tests", "Result.Tests\Result.Tests.csproj", "{27B1DC79-272B-479E-8D9B-B6A4D6EA99C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System1Group.Lib.Result.Tests", "Result.Tests\System1Group.Lib.Result.Tests.csproj", "{27B1DC79-272B-479E-8D9B-B6A4D6EA99C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

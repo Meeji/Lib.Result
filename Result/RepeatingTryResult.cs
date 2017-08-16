@@ -1,4 +1,4 @@
-﻿namespace System1Group.Core.Result
+﻿namespace System1Group.Lib.Result
 {
     using System;
     using CoreUtils;
@@ -14,7 +14,7 @@
 
         public override bool IsSuccess => this.TryRunFactory().IsSuccess;
 
-        public override TReturn Do<TReturn>([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Func<Exception, TReturn> onFailure)
+        public override TReturn Do<TReturn>([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Func<Exception, TReturn> onFailure)
         {
             return this.TryRunFactory().Do(onSuccess, onFailure);
         }

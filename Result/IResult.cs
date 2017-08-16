@@ -1,4 +1,4 @@
-namespace System1Group.Core.Result
+namespace System1Group.Lib.Result
 {
     using System;
 
@@ -10,17 +10,17 @@ namespace System1Group.Core.Result
 
         TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure);
 
-        void Do([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Action<TSuccess> onSuccess, [System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull] Action<TFailure> onFailure);
+        void Do([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Action<TSuccess> onSuccess, [System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Action<TFailure> onFailure);
 
         TSuccess Unwrap();
 
-        TSuccess Unwrap([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error);
+        TSuccess Unwrap([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error);
 
         TFailure UnwrapError();
 
-        TFailure UnwrapError([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error);
+        TFailure UnwrapError([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNullEmptyOrWhitespace] string error);
 
-        TSuccess UnwrapOr([System1Group.Core.Attributes.ParameterTesting.AllowedToBeNull, System1Group.Core.Attributes.ParameterGeneration.UseNullWhenAutomating] TSuccess defaultItem);
+        TSuccess UnwrapOr([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull, System1Group.Lib.Attributes.ParameterGeneration.UseNullWhenAutomating] TSuccess defaultItem);
 
         TSuccess UnwrapOr(Func<TSuccess> defaultItemCalculator);
 
@@ -31,14 +31,14 @@ namespace System1Group.Core.Result
         Result<TReturn, TFailure> BindToResult<TReturn>(Func<TSuccess, Result<TReturn, TFailure>> bindingAction);
 
         Result<TReturn, TFailure> Combine<TReturn, TCombine>(
-            [System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
+            [System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
             Func<TSuccess, TCombine, TReturn> combineUsing);
 
         [Obsolete("Use Combine<Result, Function> or CombineToResult instead")]
-        Result<TSuccess, TFailure> Combine<TCombine>([System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing);
+        Result<TSuccess, TFailure> Combine<TCombine>([System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing);
 
         Result<TReturn, TFailure> CombineToResult<TReturn, TCombine>(
-            [System1Group.Core.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
+            [System1Group.Lib.Attributes.ParameterGeneration.IsPOCO] Result<TCombine, TFailure> combineWith,
             Func<TSuccess, TCombine, Result<TReturn, TFailure>> combineUsing);
 
         IGuardEntryPoint<TSuccess, TFailure, TOut> Guard<TOut>();
