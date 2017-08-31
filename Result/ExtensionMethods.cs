@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using Attributes.ParameterTesting;
     using CoreUtils;
 
     public static class ExtensionMethods
@@ -40,7 +41,7 @@
             return outList;
         }
 
-        public static Result<TValue, string> TryGetValueAsResult<TKey, TValue>([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] this IDictionary<TKey, TValue> dict, TKey key)
+        public static Result<TValue, string> TryGetValueAsResult<TKey, TValue>([AllowedToBeNull] this IDictionary<TKey, TValue> dict, TKey key)
         {
             if (dict == null)
             {
@@ -58,7 +59,7 @@
 
         public static Result<TOutput, TFailure> ResultAggregate<TSuccess, TFailure, TOutput>(
             this IEnumerable<Result<TSuccess, TFailure>> values,
-            [System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] TOutput aggregateBase,
+            [AllowedToBeNull] TOutput aggregateBase,
             Func<TOutput, TSuccess, TOutput> func)
         {
             Throw.IfNull(values, "values");
@@ -75,7 +76,7 @@
         }
 
         [ExcludeFromCodeCoverage]
-        public static Result<T, string> SingleAsResult<T>([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] this IQueryable<T> values)
+        public static Result<T, string> SingleAsResult<T>([AllowedToBeNull] this IQueryable<T> values)
         {
             if (values == null)
             {
@@ -98,7 +99,7 @@
             return list[0];
         }
 
-        public static Result<T, string> SingleAsResult<T>([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] this IEnumerable<T> values)
+        public static Result<T, string> SingleAsResult<T>([AllowedToBeNull] this IEnumerable<T> values)
         {
             if (values == null)
             {
@@ -122,7 +123,7 @@
             }
         }
 
-        [System1Group.Lib.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
             where TFailure : Exception
         {
@@ -130,27 +131,27 @@
             return result.UnwrapOr(exc => { throw exc; });
         }
 
-        [System1Group.Lib.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static LazyResult<TSuccess, TFailure> MakeLazy<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
         {
             Throw.IfNull(result, nameof(result));
             return result as LazyResult<TSuccess, TFailure> ?? new LazyResult<TSuccess, TFailure>(() => result);
         }
 
-        [System1Group.Lib.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(this Result<Result<TSuccess, TFailure>, TFailure> result)
         {
             Throw.IfNull(result, nameof(result));
             return result.BindToResult(t => t);
         }
 
-        [System1Group.Lib.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(this Result<TSuccess, TFailure> result, TFailureNew newValue)
         {
             return result.Do<Result<TSuccess, TFailureNew>>(success => success, _ => newValue);
         }
 
-        [System1Group.Lib.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
             this Result<TSuccess, TFailure> result,
             Func<TFailureNew> newValue)
@@ -159,7 +160,7 @@
             return result.Do<Result<TSuccess, TFailureNew>>(success => success, _ => newValue);
         }
 
-        [System1Group.Lib.Attributes.ParameterTesting.ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
             this Result<TSuccess, TFailure> result,
             Func<TFailure, TFailureNew> newValue)

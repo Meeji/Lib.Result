@@ -39,10 +39,6 @@
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CoreUtils, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CoreUtils.1.0.2\lib\CoreUtils.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Optional, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Optional.3.2.0\lib\net452\Optional.dll</HintPath>
     </Reference>
@@ -54,8 +50,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="System1Group.Lib.Attributes, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\System1Group.Lib.Attributes.1.0.3\lib\net452\System1Group.Lib.Attributes.dll</HintPath>
+    <Reference Include="System1Group.Lib.Attributes, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System1Group.Lib.Attributes.1.0.4\lib\net452\System1Group.Lib.Attributes.dll</HintPath>
+    </Reference>
+    <Reference Include="System1Group.Lib.CoreUtils, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System1Group.Lib.CoreUtils.1.0.7\lib\net452\System1Group.Lib.CoreUtils.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

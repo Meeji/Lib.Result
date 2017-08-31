@@ -1,6 +1,7 @@
 ﻿namespace System1Group.Lib.Result
 {
     using System;
+    using Attributes.ParameterTesting;
     using CoreUtils;
 
     public class TryResult<TSuccess> : Result<TSuccess, Exception>
@@ -15,7 +16,7 @@
 
         public override bool IsSuccess => this.lazyValue.Value.IsSuccess;
 
-        public override TReturn Do<TReturn>([System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [System1Group.Lib.Attributes.ParameterTesting.AllowedToBeNull] Func<Exception, TReturn> onFailure)
+        public override TReturn Do<TReturn>([AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [AllowedToBeNull] Func<Exception, TReturn> onFailure)
         {
             return this.lazyValue.Value.Do(onSuccess, onFailure);
         }
