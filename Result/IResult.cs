@@ -22,7 +22,7 @@ namespace System1Group.Lib.Result
 
         TFailure UnwrapError([AllowedToBeNullEmptyOrWhitespace] string error);
 
-        TSuccess UnwrapOr([UseNullWhenAutomating] TSuccess defaultItem);
+        TSuccess UnwrapOr([AllowedToBeNull] TSuccess defaultItem);
 
         TSuccess UnwrapOr(Func<TSuccess> defaultItemCalculator);
 

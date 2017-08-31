@@ -70,7 +70,7 @@
                 err => err);
         }
 
-        public virtual TSuccess UnwrapOr([UseNullWhenAutomating] TSuccess defaultItem)
+        public virtual TSuccess UnwrapOr([AllowedToBeNull] TSuccess defaultItem)
         {
             return this.Do(item => item, err => defaultItem);
         }
