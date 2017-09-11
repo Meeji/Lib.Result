@@ -5,6 +5,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="CSharpRuleSet" Version="2.0.9">
+            <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Optional" Version="3.2.0" />
     <PackageReference Include="System1Group.Lib.Attributes" Version="2.0.10" />
     <PackageReference Include="System1Group.Lib.CoreUtils" Version="2.0.38" />

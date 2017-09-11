@@ -18,6 +18,7 @@
         public void NullDictionary()
         {
             IDictionary<int, int> dict = null;
+
             // ReSharper disable once ExpressionIsAlwaysNull
             Assert.AreEqual("Could not get value from null dictionary", dict.TryGetValueAsResult(1).UnwrapError());
         }
