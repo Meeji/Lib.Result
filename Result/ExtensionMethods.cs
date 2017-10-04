@@ -168,5 +168,21 @@
             Throw.IfNull(result, nameof(result));
             return result.Do<Result<TSuccess, TFailureNew>>(success => success, failure => newValue(failure));
         }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static T Either<T>(this Result<T, T> result)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.Do(t => t, t => t);
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static object Either<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+            where TSuccess : class
+            where TFailure : class
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.Do<object>(t => t, t => t);
+        }
     }
 }
