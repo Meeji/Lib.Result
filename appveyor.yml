@@ -15,6 +15,8 @@ nuget:
   account_feed: true 
   project_feed: true 
   disable_publish_on_pr: true
+init:
+- ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME" }
 before_build:
 - cmd: dotnet restore
 build:
@@ -23,5 +25,5 @@ test_script:
 - ps: dotnet test Result.Tests\System1Group.Lib.Result.Tests.csproj
 after_build:
 - ps: dotnet pack Result\System1Group.Lib.Result.csproj
-artifacts:
-- path: '**\*.nupkg'
+on_success:
+- ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Get-ChildItem -Path .\ -Include *.nupkg -Recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name } } else { Write-Host "Skip uploading artefacts for non-tag build." }
