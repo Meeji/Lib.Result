@@ -40,11 +40,8 @@ gotCustomer = customerResult.IsSuccess;
 gotCustomer = !customerResult.IsFailure;
 
 // We can assume success and attempt to unwrap the inner value.
-//This will throw if our assumption is incorrect.
+// This will throw if our assumption is incorrect.
 var customer = customerResult.Unwrap();
-
-// We can also perform this operation by casting
-customer = (Customer)customerResult;
 
 // To be a bit safer we can provide a default value - in this case null
 customer = customerResult.UnwrapOr(null);
@@ -62,11 +59,11 @@ The ```Result``` type allows you to 'use' the inner value without unwrapping it 
 
 ```csharp
 var five = 5;
-var successFive = (Result<int, string>)five; // Could also have used 'new Success<int, string>(five)';
+var successFive = (Result<int, string>)five; // Could also have used 'Result.Success<int, string>(five)';
 var successTen = successFive.Bind(i => i + 5); // Value is accessed without unwrapping
 successTen.Unwrap(); // 10!
 
-var failureFive = (Result<int, string>)"some error"; // 'new Failure<int, string>("some error")';
+var failureFive = (Result<int, string>)"some error"; // 'Result.Failure<int, string>("some error")';
 var failureTen = failureFive.Bind(i => i + 5); // Value is mutated without unwrapping
 failureTen.UnwrapError(); // "some error"!
 ```
@@ -153,7 +150,7 @@ NOTE: The ```TryResult``` is not as lazy as a LazyResult. It'll get the value on
 Using a guard allows for advanced matching on the inner success and failure values of a result type.
 
 ```csharp
-var result = new Success<int, string>(10).Guard()
+var result = Result.Success<int, string>(10).Guard()
   .Success() // Set up some success paths (we could also have set up failure paths)
   .Where(
       s => s == 5,                  // if success value is 5
@@ -172,4 +169,4 @@ Assert.That(result == "10 is even!");
 ```
 
 ## Ahh! So ```Result``` is a Monad then?
-Yes. No. Maybe? I don't know. If you have a better understanding of monads than I do (and you probably do) please let me know. Answers on a postcard.
+Yes. No. Maybe? I think so.
