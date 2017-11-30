@@ -1,4 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/dca3l5t2wpul8mw7/branch/master?svg=true)](https://ci.appveyor.com/project/System1Group/result/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/9suu66447805c6os/branch/master?svg=true)](https://ci.appveyor.com/project/System1Group/lib-result/branch/master)
+
 # Result
 C# type that represents either the result of a task that may succeed, or the task itself. Similar to Result types in functional languages.
 
