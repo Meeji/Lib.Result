@@ -2,11 +2,11 @@
 {
     using System;
 
-    internal class InvalidUnwrapException : Exception
+    public class InvalidUnwrapException : Exception
     {
         private const string DefaultError =
             @"Tried to unwrap {0} value of a result when there was no such value. Try using .Do for safe handling of unexpected cases.
-        Action value is {1}";
+Value in result is: {1}";
 
         public InvalidUnwrapException(object result, object item, UnwrapType failedUnwrapType, string customError = null)
             : base(
@@ -19,7 +19,7 @@
             this.FailedUnwrapType = failedUnwrapType;
         }
 
-        internal enum UnwrapType
+        public enum UnwrapType
         {
             Failure,
             Success
