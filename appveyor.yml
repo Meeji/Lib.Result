@@ -12,7 +12,6 @@ dotnet_csproj:
 install:
   nuget sources add -name CSharpRuleSet -source https://ci.appveyor.com/nuget/csharpruleset-rxwtqx7d05sl
 nuget:
-  account_feed: true 
   project_feed: true 
   disable_publish_on_pr: true
 init:
