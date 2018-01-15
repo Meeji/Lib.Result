@@ -19,41 +19,30 @@
             Throw.IfNull(onSuccess, nameof(onSuccess));
             Throw.IfNull(onFailure, nameof(onFailure));
 
-            Func<TSuccess, object> wrappedSuccess = null;
-            Func<TFailure, object> wrappedFailure = null;
-
-            if (onSuccess != null)
-            {
-                wrappedSuccess = s =>
-                    {
-                        onSuccess(s);
-                        return null;
-                    };
-            }
-
-            if (onFailure != null)
-            {
-                wrappedFailure = f =>
-                    {
-                        onFailure(f);
-                        return null;
-                    };
-            }
-
-            this.Do(wrappedSuccess, wrappedFailure);
+            this.Do<object>(
+                item =>
+                {
+                    onSuccess(item);
+                    return null;
+                },
+                err =>
+                {
+                    onFailure(err);
+                    return null;
+                });
         }
 
         public virtual TSuccess Unwrap([AllowedToBeNullEmptyOrWhitespace] string error = null)
         {
             return this.Do(
                 item => item,
-                defaultError => throw new InvalidUnwrapException(this, InvalidUnwrapException.UnwrapType.Success, error));
+                err => throw new InvalidUnwrapException(this, err, InvalidUnwrapException.UnwrapType.Success, error));
         }
 
         public virtual TFailure UnwrapError([AllowedToBeNullEmptyOrWhitespace] string error = null)
         {
             return this.Do(
-                item => throw new InvalidUnwrapException(this, InvalidUnwrapException.UnwrapType.Failure, error),
+                item => throw new InvalidUnwrapException(this, item, InvalidUnwrapException.UnwrapType.Failure, error),
                 err => err);
         }
 
