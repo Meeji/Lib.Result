@@ -28,6 +28,16 @@
             return LazyResult.Create(() => base.Bind(bindingAction));
         }
 
+        public override Result<TNewSuccess, TNewFailure> Bind<TNewSuccess, TNewFailure>(
+            Func<TSuccess, TNewSuccess> successBindingAction,
+            Func<TFailure, TNewFailure> failureBindingAction)
+        {
+            Throw.IfNull(successBindingAction, nameof(successBindingAction));
+            Throw.IfNull(failureBindingAction, nameof(failureBindingAction));
+
+            return LazyResult.Create(() => base.Bind(successBindingAction, failureBindingAction));
+        }
+
         public override Result<TReturn, TFailure> BindToResult<TReturn>(Func<TSuccess, Result<TReturn, TFailure>> bindingAction)
         {
             Throw.IfNull(bindingAction, nameof(bindingAction));

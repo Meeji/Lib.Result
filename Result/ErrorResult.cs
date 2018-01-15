@@ -4,6 +4,10 @@
     using Attributes.ParameterTesting;
     using CoreUtils;
 
+    /// <summary>
+    /// Specialised Result`TS`TF type for cases where there is no Success value and we only care about whether an error has occurred. Assignable to Result`bool`TF
+    /// </summary>
+    /// <typeparam name="TFailure">value of error if an error occurred</typeparam>
     public class ErrorResult<TFailure> : Result<bool, TFailure>
     {
         private readonly TFailure failure;
