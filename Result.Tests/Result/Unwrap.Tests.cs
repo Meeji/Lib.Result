@@ -1,6 +1,7 @@
 ﻿namespace System1Group.Lib.Result.Tests
 {
     using System;
+    using Exceptions;
     using NUnit.Framework;
 
     [TestFixture]
@@ -23,8 +24,11 @@
             var error2 = "second error message";
             var failure = new Failure<object, string>(error);
 
-            var e = Assert.Throws<InvalidOperationException>(() => failure.Unwrap(error2));
+            var e = Assert.Throws<InvalidUnwrapException>(() => failure.Unwrap(error2));
             Assert.That(e.Message, Is.EqualTo(error2));
+            Assert.That(e.Result, Is.EqualTo(failure));
+            Assert.That(e.Item, Is.EqualTo(error));
+            Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
         }
 
         [Test]
@@ -33,8 +37,11 @@
             var error = "error message";
             var failure = new Failure<object, string>(error);
 
-            var e = Assert.Throws<InvalidOperationException>(() => failure.Unwrap());
-            Assert.That(e.Message, Is.EqualTo(error));
+            var e = Assert.Throws<InvalidUnwrapException>(() => failure.Unwrap());
+            Assert.That(e.Message, Does.StartWith("Tried to unwrap"));
+            Assert.That(e.Result, Is.EqualTo(failure));
+            Assert.That(e.Item, Is.EqualTo(error));
+            Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
         }
     }
 }

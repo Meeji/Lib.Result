@@ -28,18 +28,20 @@
             return LazyResult.Create(() => base.Bind(bindingAction));
         }
 
+        public override Result<TNewSuccess, TNewFailure> Bind<TNewSuccess, TNewFailure>(
+            Func<TSuccess, TNewSuccess> successBindingAction,
+            Func<TFailure, TNewFailure> failureBindingAction)
+        {
+            Throw.IfNull(successBindingAction, nameof(successBindingAction));
+            Throw.IfNull(failureBindingAction, nameof(failureBindingAction));
+
+            return LazyResult.Create(() => base.Bind(successBindingAction, failureBindingAction));
+        }
+
         public override Result<TReturn, TFailure> BindToResult<TReturn>(Func<TSuccess, Result<TReturn, TFailure>> bindingAction)
         {
             Throw.IfNull(bindingAction, nameof(bindingAction));
             return LazyResult.Create(() => base.BindToResult(bindingAction));
-        }
-
-        [Obsolete("Use Combine<Result, Function> or CombineToResult instead")]
-        public override Result<TSuccess, TFailure> Combine<TCombine>([IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
-        {
-            Throw.IfNull(combineWith, nameof(combineWith));
-            Throw.IfNull(combineUsing, nameof(combineUsing));
-            return LazyResult.Create(() => base.Combine(combineWith, combineUsing));
         }
 
         public override Result<TReturn, TFailure> Combine<TReturn, TCombine>([IsPOCO] Result<TCombine, TFailure> combineWith, Func<TSuccess, TCombine, TReturn> combineUsing)

@@ -48,8 +48,7 @@
                 return "Could not get value from null dictionary";
             }
 
-            TValue outValue;
-            if (dict.TryGetValue(key, out outValue))
+            if (dict.TryGetValue(key, out var outValue))
             {
                 return outValue;
             }
@@ -148,7 +147,7 @@
         [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(this Result<TSuccess, TFailure> result, TFailureNew newValue)
         {
-            return result.Do<Result<TSuccess, TFailureNew>>(success => success, _ => newValue);
+            return result.Bind(success => success, _ => newValue);
         }
 
         [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
@@ -157,7 +156,7 @@
             Func<TFailureNew> newValue)
         {
             Throw.IfNull(result, nameof(result));
-            return result.Do<Result<TSuccess, TFailureNew>>(success => success, _ => newValue);
+            return result.Bind(success => success, _ => newValue());
         }
 
         [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
@@ -178,11 +177,16 @@
 
         [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static object Either<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-            where TSuccess : class
-            where TFailure : class
         {
             Throw.IfNull(result, nameof(result));
             return result.Do<object>(t => t, t => t);
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailure> RetainIf<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, bool> predicate, TFailure replaceWith)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.BindToResult(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
         }
     }
 }
