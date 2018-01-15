@@ -4,8 +4,9 @@
     using Attributes.ParameterGeneration;
     using Attributes.ParameterTesting;
     using CoreUtils;
+    using Exceptions;
 
-    public abstract partial class Result<TSuccess, TFailure> : IResult<TSuccess, TFailure>
+    public abstract partial class Result<TSuccess, TFailure>
     {
         public abstract bool IsSuccess { get; }
 
@@ -13,8 +14,11 @@
 
         public abstract TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure);
 
-        public virtual void Do([AllowedToBeNull] Action<TSuccess> onSuccess, [AllowedToBeNull] Action<TFailure> onFailure)
+        public virtual void Do(Action<TSuccess> onSuccess, Action<TFailure> onFailure)
         {
+            Throw.IfNull(onSuccess, nameof(onSuccess));
+            Throw.IfNull(onFailure, nameof(onFailure));
+
             Func<TSuccess, object> wrappedSuccess = null;
             Func<TFailure, object> wrappedFailure = null;
 
@@ -39,34 +43,17 @@
             this.Do(wrappedSuccess, wrappedFailure);
         }
 
-        public virtual TSuccess Unwrap()
-        {
-            return this.Unwrap(null);
-        }
-
-        public virtual TSuccess Unwrap([AllowedToBeNullEmptyOrWhitespace] string error)
+        public virtual TSuccess Unwrap([AllowedToBeNullEmptyOrWhitespace] string error = null)
         {
             return this.Do(
                 item => item,
-                defaultError =>
-                    {
-                        error = string.IsNullOrEmpty(error) ? defaultError.ToString() : error;
-                        throw new InvalidOperationException(error);
-                    });
+                defaultError => throw new InvalidUnwrapException(this, InvalidUnwrapException.UnwrapType.Success, error));
         }
 
-        public virtual TFailure UnwrapError()
-        {
-            return this.UnwrapError(null);
-        }
-
-        public virtual TFailure UnwrapError([AllowedToBeNullEmptyOrWhitespace] string error)
+        public virtual TFailure UnwrapError([AllowedToBeNullEmptyOrWhitespace] string error = null)
         {
             return this.Do(
-                item =>
-                    {
-                        throw new InvalidOperationException(string.IsNullOrEmpty(error) ? "Tried to unwrap error of a Success value" : error);
-                    },
+                item => throw new InvalidUnwrapException(this, InvalidUnwrapException.UnwrapType.Failure, error),
                 err => err);
         }
 
@@ -93,6 +80,15 @@
             return this.Do<Result<TReturn, TFailure>>(item => bindingAction(item), err => err);
         }
 
+        public virtual Result<TNewSuccess, TNewFailure> Bind<TNewSuccess, TNewFailure>(
+            Func<TSuccess, TNewSuccess> successBindingAction,
+            Func<TFailure, TNewFailure> failureBindingAction)
+        {
+            Throw.IfNull(successBindingAction, nameof(successBindingAction));
+            Throw.IfNull(failureBindingAction, nameof(failureBindingAction));
+            return this.Do<Result<TNewSuccess, TNewFailure>>(item => successBindingAction(item), err => failureBindingAction(err));
+        }
+
         public virtual Result<TReturn, TFailure> BindToResult<TReturn>(Func<TSuccess, Result<TReturn, TFailure>> bindingAction)
         {
             Throw.IfNull(bindingAction, nameof(bindingAction));
@@ -106,20 +102,6 @@
             Throw.IfNull(combineWith, nameof(combineWith));
             Throw.IfNull(combineUsing, nameof(combineUsing));
             return this.BindToResult(t => combineWith.Bind(c => combineUsing(t, c)));
-        }
-
-        [Obsolete("Use Combine<Result, Function> or CombineToResult instead")]
-        public virtual Result<TSuccess, TFailure> Combine<TCombine>([IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
-        {
-            Throw.IfNull(combineWith, nameof(combineWith));
-            Throw.IfNull(combineUsing, nameof(combineUsing));
-            return this.BindToResult(
-                t => combineWith.Bind(
-                    c =>
-                        {
-                            combineUsing(t, c);
-                            return t;
-                        }));
         }
 
         public virtual Result<TReturn, TFailure> CombineToResult<TReturn, TCombine>(

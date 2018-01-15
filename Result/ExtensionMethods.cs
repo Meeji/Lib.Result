@@ -178,11 +178,16 @@
 
         [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static object Either<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-            where TSuccess : class
-            where TFailure : class
         {
             Throw.IfNull(result, nameof(result));
             return result.Do<object>(t => t, t => t);
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static object RetainIf<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, bool> predicate, TFailure replaceWith)
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.BindToResult(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
         }
     }
 }

@@ -34,14 +34,6 @@
             return LazyResult.Create(() => base.BindToResult(bindingAction));
         }
 
-        [Obsolete("Use Combine<Result, Function> or CombineToResult instead")]
-        public override Result<TSuccess, TFailure> Combine<TCombine>([IsPOCO] Result<TCombine, TFailure> combineWith, Action<TSuccess, TCombine> combineUsing)
-        {
-            Throw.IfNull(combineWith, nameof(combineWith));
-            Throw.IfNull(combineUsing, nameof(combineUsing));
-            return LazyResult.Create(() => base.Combine(combineWith, combineUsing));
-        }
-
         public override Result<TReturn, TFailure> Combine<TReturn, TCombine>([IsPOCO] Result<TCombine, TFailure> combineWith, Func<TSuccess, TCombine, TReturn> combineUsing)
         {
             Throw.IfNull(combineWith, nameof(combineWith));
