@@ -56,24 +56,6 @@
             return string.Format("Dictionary does not contain key: {0}", key);
         }
 
-        public static Result<TOutput, TFailure> ResultAggregate<TSuccess, TFailure, TOutput>(
-            this IEnumerable<Result<TSuccess, TFailure>> values,
-            [AllowedToBeNull] TOutput aggregateBase,
-            Func<TOutput, TSuccess, TOutput> func)
-        {
-            Throw.IfNull(values, "values");
-            Throw.IfNull(func, "func");
-
-            return values.Aggregate((Result<TOutput, TFailure>)aggregateBase, (output, item) => output.Combine(item, func));
-        }
-
-        public static Result<TOutput, TFailure> ResultAggregate<TSuccess, TFailure, TOutput>(
-            this IEnumerable<Result<TSuccess, TFailure>> values,
-            Func<TOutput, TSuccess, TOutput> func)
-        {
-            return ResultAggregate(values, default(TOutput), func);
-        }
-
         [ExcludeFromCodeCoverage]
         public static Result<T, string> SingleAsResult<T>([AllowedToBeNull] this IQueryable<T> values)
         {
@@ -187,6 +169,28 @@
         {
             Throw.IfNull(result, nameof(result));
             return result.BindToResult(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, TFailure replaceWith)
+        where TSuccess : class
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.BindToResult(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action)
+        {
+            Throw.IfNull(result, nameof(result));
+            result.Do(action, _ => { });
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static void OnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> action)
+        {
+            Throw.IfNull(result, nameof(result));
+            result.Do(_ => { }, action);
         }
     }
 }
