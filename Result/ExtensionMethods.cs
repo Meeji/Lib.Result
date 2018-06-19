@@ -172,6 +172,14 @@
         }
 
         [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, TFailure replaceWith)
+        where TSuccess : class
+        {
+            Throw.IfNull(result, nameof(result));
+            return result.BindToResult(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
         public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action)
         {
             Throw.IfNull(result, nameof(result));
