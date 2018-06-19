@@ -15,7 +15,7 @@
         }
 
         [Test]
-        public void Ok_SquashFailure()
+        public void Ok_Null()
         {
             var error = "error!";
             var result = new Success<object, string>(null);
