@@ -56,24 +56,6 @@
             return string.Format("Dictionary does not contain key: {0}", key);
         }
 
-        public static Result<TOutput, TFailure> ResultAggregate<TSuccess, TFailure, TOutput>(
-            this IEnumerable<Result<TSuccess, TFailure>> values,
-            [AllowedToBeNull] TOutput aggregateBase,
-            Func<TOutput, TSuccess, TOutput> func)
-        {
-            Throw.IfNull(values, "values");
-            Throw.IfNull(func, "func");
-
-            return values.Aggregate((Result<TOutput, TFailure>)aggregateBase, (output, item) => output.Combine(item, func));
-        }
-
-        public static Result<TOutput, TFailure> ResultAggregate<TSuccess, TFailure, TOutput>(
-            this IEnumerable<Result<TSuccess, TFailure>> values,
-            Func<TOutput, TSuccess, TOutput> func)
-        {
-            return ResultAggregate(values, default(TOutput), func);
-        }
-
         [ExcludeFromCodeCoverage]
         public static Result<T, string> SingleAsResult<T>([AllowedToBeNull] this IQueryable<T> values)
         {
@@ -201,26 +183,6 @@
         {
             Throw.IfNull(result, nameof(result));
             result.Do(_ => { }, action);
-        }
-
-        public static Result<TReturn, TFailure> Combine<TSuccess, TFailure, TReturn, TCombine>(
-            this Result<TSuccess, TFailure> result,
-            Result<TCombine, TFailure> combineWith,
-            Func<TSuccess, TCombine, TReturn> combineUsing)
-        {
-            Throw.IfNull(combineWith, nameof(combineWith));
-            Throw.IfNull(combineUsing, nameof(combineUsing));
-            return result.BindToResult(t => combineWith.Bind(c => combineUsing(t, c)));
-        }
-
-        public static Result<TReturn, TFailure> CombineToResult<TSuccess, TFailure, TReturn, TCombine>(
-            this Result<TSuccess, TFailure> result,
-            Result<TCombine, TFailure> combineWith,
-            Func<TSuccess, TCombine, Result<TReturn, TFailure>> combineUsing)
-        {
-            Throw.IfNull(combineWith, nameof(combineWith));
-            Throw.IfNull(combineUsing, nameof(combineUsing));
-            return result.BindToResult(t => combineWith.BindToResult(c => combineUsing(t, c)));
         }
     }
 }
