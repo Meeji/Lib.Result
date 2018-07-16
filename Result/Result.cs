@@ -88,7 +88,7 @@
         [ExcludeFromCodeCoverage]
         public virtual IGuardEntryPoint<TSuccess, TFailure, TOut> Guard<TOut>()
         {
-            return new ResultGuard<TSuccess, TFailure, TOut>(this); // Not very testable, but Result can't really be provided by IOC so it can't be
+            return new ResultGuard<TSuccess, TFailure, TOut>(this);
         }
     }
 }
