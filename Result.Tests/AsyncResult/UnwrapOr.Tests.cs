@@ -1,10 +1,10 @@
-﻿namespace System1Group.Lib.Result.Tests
+﻿namespace System1Group.Lib.Result.Tests.AsyncResult
 {
     using System.Threading.Tasks;
     using NUnit.Framework;
 
     [TestFixture]
-    public class OptionalResult_UnwrapOrAsync_Tests
+    public class AsyncResult_UnwrapOrAsync_Tests
     {
         [Test]
         public async Task Success_Ok()
