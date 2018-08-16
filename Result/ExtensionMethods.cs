@@ -192,5 +192,33 @@
             Throw.IfNull(result, nameof(result));
             result.Do(_ => { }, action);
         }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static bool TryGetSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess value)
+        {
+            Throw.IfNull(result, nameof(result));
+            if (result.IsSuccess)
+            {
+                value = result.Unwrap();
+                return true;
+            }
+
+            value = default(TSuccess);
+            return false;
+        }
+
+        [ExcludeFromAutoParameterTests("Can't initialise concrete class")]
+        public static bool TryGetFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TFailure value)
+        {
+            Throw.IfNull(result, nameof(result));
+            if (result.IsFailure)
+            {
+                value = result.UnwrapError();
+                return true;
+            }
+
+            value = default(TFailure);
+            return false;
+        }
     }
 }
