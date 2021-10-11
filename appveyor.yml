@@ -10,9 +10,10 @@ dotnet_csproj:
   version: '{version}'
   package_version: '{version}'
 install:
-  nuget sources add -name CSharpRuleSet -source https://ci.appveyor.com/nuget/csharpruleset-rxwtqx7d05sl
+  - nuget sources add -name CSharpRuleSet -source https://ci.appveyor.com/nuget/csharpruleset-rxwtqx7d05sl
+  - nuget sources add -name Attributes -source https://ci.appveyor.com/nuget/lib-attributes-0mux6mo64i0f
+  - nuget sources add -name Core -source https://ci.appveyor.com/nuget/lib-coreutils-r8l5cjkabp8y
 nuget:
-  account_feed: true 
   project_feed: true 
   disable_publish_on_pr: true
 init:
