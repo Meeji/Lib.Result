@@ -1,53 +1,35 @@
-﻿namespace System1Group.Lib.Result.Tests
+﻿namespace Result.Tests;
+
+using NUnit.Framework;
+
+[TestFixture]
+public class OptionalResult_Do_Func_Tests
 {
-    using System;
-    using NUnit.Framework;
+    private const string Error = "error";
 
-    [TestFixture]
-    public class OptionalResult_Do_Func_Tests
+    private static readonly object Obj = new object();
+
+    private readonly Result<object, string> failure = new Failure<object, string>(Error);
+
+    private readonly Result<object, string> success = new Success<object, string>(Obj);
+
+    [Test]
+    public void Success_Ok()
     {
-        private const string Error = "error";
+        var result = this.success.Do(
+            onSuccess: o => o,
+            onFailure: err => new object());
 
-        private static readonly object Obj = new object();
+        Assert.That(Obj, Is.EqualTo(result));
+    }
 
-        private readonly Result<object, string> failure = new Failure<object, string>(Error);
+    [Test]
+    public void Failure_Ok()
+    {
+        var result = this.failure.Do(
+            onSuccess: o => string.Empty,
+            onFailure: err => err);
 
-        private readonly Result<object, string> success = new Success<object, string>(Obj);
-
-        [Test]
-        public void Success_Ok()
-        {
-            var result = this.success.Do(
-                onSuccess: o => o,
-                onFailure: err => new object());
-
-            Assert.That(Obj, Is.EqualTo(result));
-        }
-
-        [Test]
-        public void Failure_Ok()
-        {
-            var result = this.failure.Do(
-                onSuccess: o => null,
-                onFailure: err => err);
-
-            Assert.That(Error, Is.EqualTo(result));
-        }
-
-        [Test]
-        public void Success_NullFunc_WillThrow()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.success.Do<int>(
-                onSuccess: null,
-                onFailure: null));
-        }
-
-        [Test]
-        public void Failure_NullFunc_WillThrow()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.failure.Do<int>(
-                onSuccess: null,
-                onFailure: null));
-        }
+        Assert.That(Error, Is.EqualTo(result));
     }
 }

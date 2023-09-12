@@ -1,23 +1,22 @@
-﻿namespace System1Group.Lib.Result
+﻿namespace Result;
+
+using System;
+
+public class Failure<TSuccess, TFailure> : Result<TSuccess, TFailure>
 {
-    using System;
-    using Attributes.ParameterTesting;
-    using CoreUtils;
+    private readonly TFailure error;
 
-    public class Failure<TSuccess, TFailure> : Result<TSuccess, TFailure>
+    public Failure(TFailure error)
     {
-        private readonly TFailure error;
+        this.error = error;
+    }
 
-        public Failure([AllowedToBeNull] TFailure error)
-        {
-            this.error = error;
-        }
+    public override bool IsSuccess => false;
 
-        public override bool IsSuccess => false;
+    public override TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure) => onFailure(this.error);
 
-        public override TReturn Do<TReturn>([AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure)
-        {
-            return ReturnParameter.OrThrowIfNull(onFailure, "onFailure")(this.error);
-        }
+    public void Deconstruct(out TFailure failure)
+    {
+        failure = this.error;
     }
 }
