@@ -1,4 +1,4 @@
-﻿namespace System1Group.Lib.Result.Exceptions;
+﻿namespace Result.Exceptions;
 
 using System;
 

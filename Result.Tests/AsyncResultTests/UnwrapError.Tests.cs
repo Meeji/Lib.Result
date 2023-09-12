@@ -1,17 +1,19 @@
-﻿namespace Result.Tests;
+﻿namespace Result.Tests.AsyncResultTests;
 
+using System.Threading.Tasks;
 using Exceptions;
 using NUnit.Framework;
 
 [TestFixture]
-public class OptionalResult_UnwrapError_Tests
+public class AsyncResult_UnwrapErrorAsync_Tests
 {
     [Test]
-    public void Ok()
+    public async Task Ok()
     {
         var error = "error";
         var failure = new Failure<object, string>(error);
-        Assert.That(failure.UnwrapError(), Is.EqualTo(error));
+        var async = failure.ToAsyncResult();
+        Assert.That(await async.UnwrapErrorAsync(), Is.EqualTo(error));
     }
 
     [Test]
@@ -19,9 +21,10 @@ public class OptionalResult_UnwrapError_Tests
     {
         var obj = new { field = "field" };
         var success = new Success<object, string>(obj);
-        var e = Assert.Throws<InvalidUnwrapException>(() => success.UnwrapError());
+        var async = success.ToAsyncResult();
+        var e = Assert.ThrowsAsync<InvalidUnwrapException>(async () => await async.UnwrapErrorAsync());
         Assert.That(e.Message, Does.StartWith("Tried to unwrap"));
-        Assert.That(e.Result, Is.EqualTo(success));
+        Assert.That(e.Result, Is.EqualTo(async));
         Assert.That(e.Item, Is.EqualTo(obj));
         Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Failure));
     }
@@ -32,9 +35,10 @@ public class OptionalResult_UnwrapError_Tests
         var error = "Error text";
         var obj = new { field = "field" };
         var success = new Success<object, string>(obj);
-        var e = Assert.Throws<InvalidUnwrapException>(() => success.UnwrapError(error));
+        var async = success.ToAsyncResult();
+        var e = Assert.ThrowsAsync<InvalidUnwrapException>(async () => await async.UnwrapErrorAsync(error));
         Assert.That(e.Message, Is.EqualTo(error));
-        Assert.That(e.Result, Is.EqualTo(success));
+        Assert.That(e.Result, Is.EqualTo(async));
         Assert.That(e.Item, Is.EqualTo(obj));
         Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Failure));
     }

@@ -1,4 +1,4 @@
-﻿namespace System1Group.Lib.Result;
+﻿namespace Result;
 
 using System;
 using System.Threading.Tasks;

@@ -1,4 +1,4 @@
-﻿namespace System1Group.Lib.Result;
+﻿namespace Result;
 
 public static class Result
 {

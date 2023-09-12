@@ -1,4 +1,4 @@
-﻿namespace System1Group.Lib.Result;
+﻿namespace Result;
 
 public abstract partial class Result<TSuccess, TFailure>
 {
