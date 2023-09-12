@@ -19,8 +19,8 @@ before_build:
 build:
   verbosity: minimal
 test_script:
-- ps: dotnet test Result.Tests\System1Group.Lib.Result.Tests.csproj
+- ps: dotnet test Result.Tests\Result.Tests.csproj
 after_build:
-- ps: dotnet pack Result\System1Group.Lib.Result.csproj
+- ps: dotnet pack Result\Result.csproj
 on_success:
 - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Get-ChildItem -Path .\ -Include *.nupkg -Recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name } } else { Write-Host "Skip uploading artifacts for non-tag build." }

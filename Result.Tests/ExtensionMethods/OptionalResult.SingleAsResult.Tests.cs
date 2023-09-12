@@ -20,5 +20,7 @@ public class OptionalResult_SingleAsResult_Tests
     public void ErrorCases(IEnumerable<int> collection, string expectedResult)
     {
         Assert.That(collection.SingleAsResult().UnwrapError(), Is.EqualTo(expectedResult));
+
+        Result<int, Exception> result = Result.Success<int, Exception>(5);
     }
 }
