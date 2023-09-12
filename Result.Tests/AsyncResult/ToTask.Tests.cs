@@ -4,14 +4,14 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class AsyncResult_ToTask_Tests
+    public class AsyncResult_ToTaskAsync_Tests
     {
         [Test]
         public async Task Ok()
         {
             var result = Result.Success<int, string>(12);
             var async = result.ToAsyncResult();
-            var task = async.ToTask();
+            var task = async.ToTaskAsync();
             Assert.That(await task, Is.SameAs(result));
         }
     }

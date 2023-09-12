@@ -3,14 +3,14 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class OptionalResult_UnwrapOr_Tests
+    public class OptionalResult_Or_Tests
     {
         [Test]
         public void Success_Ok()
         {
             var obj = new { field = "field" };
             var success = new Success<object, string>(obj);
-            var obj2 = success.UnwrapOr(new object());
+            var obj2 = success.Or(new object());
 
             Assert.That(obj, Is.EqualTo(obj2));
         }
@@ -22,7 +22,7 @@
             var obj = new { field = "field" };
             var failure = new Failure<object, string>(error);
 
-            var obj2 = failure.UnwrapOr(obj);
+            var obj2 = failure.Or(obj);
             Assert.That(obj, Is.EqualTo(obj2));
         }
 
@@ -31,7 +31,7 @@
         {
             var obj = new { field = "field" };
             var success = new Success<object, string>(obj);
-            var obj2 = success.UnwrapOr(() => new object());
+            var obj2 = success.Or(() => new object());
 
             Assert.That(obj, Is.EqualTo(obj2));
         }
@@ -43,7 +43,7 @@
             var obj = new { field = "field" };
             var failure = new Failure<object, string>(error);
 
-            var obj2 = failure.UnwrapOr(() => obj);
+            var obj2 = failure.Or(() => obj);
             Assert.That(obj, Is.EqualTo(obj2));
         }
 
@@ -52,7 +52,7 @@
         {
             var obj = new { field = "field" };
             var success = new Success<object, string>(obj);
-            var obj2 = success.UnwrapOr(failure => new { field = failure });
+            var obj2 = success.Or(failure => new { field = failure });
 
             Assert.That(obj, Is.EqualTo(obj2));
         }
@@ -62,7 +62,7 @@
         {
             var error = "error message";
             var failure = new Failure<object, string>(error);
-            var obj = failure.UnwrapOr(err => err);
+            var obj = failure.Or(err => err);
             Assert.That(error, Is.EqualTo(obj));
         }
     }

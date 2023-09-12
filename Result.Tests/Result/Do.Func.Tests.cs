@@ -28,26 +28,10 @@
         public void Failure_Ok()
         {
             var result = this.failure.Do(
-                onSuccess: o => null,
+                onSuccess: o => string.Empty,
                 onFailure: err => err);
 
             Assert.That(Error, Is.EqualTo(result));
-        }
-
-        [Test]
-        public void Success_NullFunc_WillThrow()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.success.Do<int>(
-                onSuccess: null,
-                onFailure: null));
-        }
-
-        [Test]
-        public void Failure_NullFunc_WillThrow()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.failure.Do<int>(
-                onSuccess: null,
-                onFailure: null));
         }
     }
 }

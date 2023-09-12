@@ -4,25 +4,25 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class AsyncResult_BindToResultAsync_Tests
+    public class AsyncResult_MapToResultAsync_Tests
     {
         [Test]
-        public void Ok_Success()
+        public async Task Ok_Success()
         {
             var innerResult = Result.Success<int, string>(1);
             var asyncResult = innerResult.ToAsyncResult();
 
-            var result = asyncResult.BindToResultAsync(i => Result.Success<int, string>(i + 1)).Unwrap();
+            var result = await asyncResult.MapToResultAsync(i => Result.Success<int, string>(i + 1)).UnwrapAsync();
             Assert.That(result, Is.EqualTo(2));
         }
 
         [Test]
-        public void Ok_Failure()
+        public async Task Ok_Failure()
         {
             var innerResult = Result.Failure<int, string>("Error");
             var asyncResult = innerResult.ToAsyncResult();
 
-            var result = asyncResult.BindToResultAsync(i => Result.Success<int, string>(i + 1)).UnwrapError();
+            var result = await asyncResult.MapToResultAsync(i => Result.Success<int, string>(i + 1)).UnwrapErrorAsync();
             Assert.That(result, Is.EqualTo("Error"));
         }
     }

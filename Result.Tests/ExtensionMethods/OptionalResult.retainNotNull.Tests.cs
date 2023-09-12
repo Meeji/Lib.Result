@@ -18,7 +18,7 @@
         public void Ok_Null()
         {
             var error = "error!";
-            var result = new Success<object, string>(null);
+            var result = new Success<object?, string>(null);
             var newResult = result.RetainNotNull(error);
 
             Assert.AreEqual(newResult.UnwrapError(), error);

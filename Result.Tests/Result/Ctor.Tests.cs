@@ -20,7 +20,7 @@
         [Test]
         public void Success_Ok_WithNull()
         {
-            Assert.DoesNotThrow(() => new Success<object, string>(null));
+            Assert.DoesNotThrow(() => new Success<object?, string>(null));
         }
     }
 }

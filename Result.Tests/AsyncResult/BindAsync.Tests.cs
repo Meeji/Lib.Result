@@ -4,25 +4,25 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class AsyncResult_BindAsync_Tests
+    public class AsyncResult_MapAsync_Tests
     {
         [Test]
-        public void Ok_Success()
+        public async Task Ok_Success()
         {
             var innerResult = Result.Success<int, string>(1);
             var asyncResult = innerResult.ToAsyncResult();
 
-            var result = asyncResult.BindAsync(i => i + 1).Unwrap();
+            var result = await asyncResult.MapAsync(i => i + 1).UnwrapAsync();
             Assert.That(result, Is.EqualTo(2));
         }
 
         [Test]
-        public void Ok_TwoFuncs()
+        public async Task Ok_TwoFuncs()
         {
             var innerResult = Result.Success<int, string>(1);
             var asyncResult = innerResult.ToAsyncResult();
 
-            var result = asyncResult.BindAsync(i => i + 1, f => 0).Unwrap();
+            var result = await asyncResult.MapAsync(i => i + 1, f => 0).UnwrapAsync();
             Assert.That(result, Is.EqualTo(2));
         }
     }

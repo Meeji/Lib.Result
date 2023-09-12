@@ -1,35 +1,38 @@
-﻿namespace System1Group.Lib.Result
-{
-    using System;
-    using Attributes.ParameterTesting;
-    using CoreUtils;
+﻿// Is there a use case for this?
+// If so makes more sense as the following two methods:
+//   - Func<X> -> IEnumerable<Result<X, Exception>>
+//   - Func<Result<T, U>> -> IEnumerable<Result<T, U>>
 
-    public class RepeatingTryResult<TSuccess> : Result<TSuccess, Exception>
-    {
-        private readonly Func<TSuccess> factory;
+//namespace System1Group.Lib.Result
+//{
+//    using System;
 
-        public RepeatingTryResult(Func<TSuccess> factory)
-        {
-            this.factory = ReturnParameter.OrThrowIfNull(factory, "factory");
-        }
+//    public class RepeatingTryResult<TSuccess> : Result<TSuccess, Exception>
+//    {
+//        private readonly Func<TSuccess> factory;
 
-        public override bool IsSuccess => this.TryRunFactory().IsSuccess;
+//        public RepeatingTryResult(Func<TSuccess> factory)
+//        {
+//            this.factory = factory;
+//        }
 
-        public override TReturn Do<TReturn>([AllowedToBeNull] Func<TSuccess, TReturn> onSuccess, [AllowedToBeNull] Func<Exception, TReturn> onFailure)
-        {
-            return this.TryRunFactory().Do(onSuccess, onFailure);
-        }
+//        public override bool IsSuccess => this.TryRunFactory().IsSuccess;
 
-        private Result<TSuccess, Exception> TryRunFactory()
-        {
-            try
-            {
-                return this.factory();
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-        }
-    }
-}
+//        public override TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<Exception, TReturn> onFailure)
+//        {
+//            return this.TryRunFactory().Do(onSuccess, onFailure);
+//        }
+
+//        private Result<TSuccess, Exception> TryRunFactory()
+//        {
+//            try
+//            {
+//                return this.factory();
+//            }
+//            catch (Exception ex)
+//            {
+//                return ex;
+//            }
+//        }
+//    }
+//}

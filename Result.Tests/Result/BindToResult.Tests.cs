@@ -4,7 +4,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class OptionalResult_BindToResult_Tests
+    public class OptionalResult_MapToResult_Tests
     {
         private readonly Func<int, Result<string, string>> testFunc = i =>
             {
@@ -22,8 +22,8 @@
             var success = new Success<int, string>(5);
             var failure = new Success<int, string>(6);
 
-            var successResult = success.BindToResult(this.testFunc);
-            var failureResult = failure.BindToResult(this.testFunc);
+            var successResult = success.MapToResult(this.testFunc);
+            var failureResult = failure.MapToResult(this.testFunc);
 
             Assert.That(successResult.Unwrap(), Is.EqualTo("Well done!"));
             Assert.That(failureResult.UnwrapError(), Is.EqualTo("Oops"));
@@ -33,7 +33,7 @@
         public void Failure_Ok()
         {
             var failure = new Failure<int, string>("Failure");
-            var failureResult = failure.BindToResult(this.testFunc);
+            var failureResult = failure.MapToResult(this.testFunc);
 
             Assert.That(failureResult.UnwrapError(), Is.EqualTo("Failure"));
         }

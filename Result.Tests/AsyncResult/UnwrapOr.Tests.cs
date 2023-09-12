@@ -4,7 +4,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class AsyncResult_UnwrapOrAsync_Tests
+    public class AsyncResult_OrAsync_Tests
     {
         [Test]
         public async Task Success_Ok()
@@ -12,7 +12,7 @@
             var obj = new { field = "field" };
             var success = new Success<object, string>(obj);
             var async = success.ToAsyncResult();
-            var obj2 = await async.UnwrapOrAsync(new object());
+            var obj2 = await async.OrAsync(new object());
 
             Assert.That(obj, Is.EqualTo(obj2));
         }
@@ -25,7 +25,7 @@
             var failure = new Failure<object, string>(error);
             var async = failure.ToAsyncResult();
 
-            var obj2 = await async.UnwrapOrAsync(obj);
+            var obj2 = await async.OrAsync(obj);
             Assert.That(obj, Is.EqualTo(obj2));
         }
 
@@ -35,7 +35,7 @@
             var obj = new { field = "field" };
             var success = new Success<object, string>(obj);
             var async = success.ToAsyncResult();
-            var obj2 = await async.UnwrapOrAsync(() => new object());
+            var obj2 = await async.OrAsync(() => new object());
 
             Assert.That(obj, Is.EqualTo(obj2));
         }
@@ -48,7 +48,7 @@
             var failure = new Failure<object, string>(error);
             var async = failure.ToAsyncResult();
 
-            var obj2 = await async.UnwrapOrAsync(() => obj);
+            var obj2 = await async.OrAsync(() => obj);
             Assert.That(obj, Is.EqualTo(obj2));
         }
 
@@ -58,7 +58,7 @@
             var obj = new { field = "field" };
             var success = new Success<object, string>(obj);
             var async = success.ToAsyncResult();
-            var obj2 = await async.UnwrapOrAsync(failure => new { field = failure });
+            var obj2 = await async.OrAsync(failure => new { field = failure });
 
             Assert.That(obj, Is.EqualTo(obj2));
         }
@@ -69,7 +69,7 @@
             var error = "error message";
             var failure = new Failure<object, string>(error);
             var async = failure.ToAsyncResult();
-            var obj = await async.UnwrapOrAsync(err => err);
+            var obj = await async.OrAsync(err => err);
             Assert.That(error, Is.EqualTo(obj));
         }
     }
