@@ -3,6 +3,7 @@ branches:
   only:
   - master
 configuration: Release
+image: Visual Studio 2022
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
