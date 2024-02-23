@@ -2,7 +2,7 @@
 
 using System;
 
-public class Failure<TSuccess, TFailure> : Result<TSuccess, TFailure>
+public sealed class Failure<TSuccess, TFailure> : Result<TSuccess, TFailure>
 {
     private readonly TFailure error;
 

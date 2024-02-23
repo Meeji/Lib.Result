@@ -2,7 +2,7 @@
 
 using System;
 
-public class Success<TSuccess, TFailure> : Result<TSuccess, TFailure>
+public sealed class Success<TSuccess, TFailure> : Result<TSuccess, TFailure>
 {
     private readonly TSuccess item;
 
