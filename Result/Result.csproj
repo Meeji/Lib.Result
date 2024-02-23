@@ -1,12 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<WarningsAsErrors>Nullable</WarningsAsErrors>
-	<LangVersion>11.0</LangVersion>
-    <Version>3.0.1</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+        <LangVersion>11.0</LangVersion>
+        <Version>3.0.2</Version>
+        <PackageId>Meeji.Result</PackageId>
+        <Description>A Result type similar to those found in functional languages.</Description>
+        <PackageProjectUrl>https://github.com/Meeji/Lib.Result</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Meeji/Lib.Result</RepositoryUrl>
+        <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+        <Copyright>Copyright (c) 2024.</Copyright>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
 </Project>
