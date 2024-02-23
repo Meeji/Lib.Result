@@ -73,25 +73,23 @@ public static class ExtensionMethods
             return "SingleAsResult called on null collection";
         }
 
-        using (var e = values.GetEnumerator())
+        using var e = values.GetEnumerator();
+        if (!e.MoveNext())
         {
-            if (!e.MoveNext())
-            {
-                return "SingleAsResult called on collection with no elements";
-            }
-
-            var result = e.Current;
-            if (!e.MoveNext())
-            {
-                return result;
-            }
-
-            return "SingleAsResult called on collection with more than one element";
+            return "SingleAsResult called on collection with no elements";
         }
+
+        var result = e.Current;
+        if (!e.MoveNext())
+        {
+            return result;
+        }
+
+        return "SingleAsResult called on collection with more than one element";
     }
 
     public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-        where TFailure : Exception => result.Or(exc => { throw exc; });
+        where TFailure : Exception => result.Or(exc => throw exc);
 
     public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(this Result<Result<TSuccess, TFailure>, TFailure> result) => result.MapToResult(t => t);
 
@@ -109,7 +107,42 @@ public static class ExtensionMethods
 
     public static object? Either<TSuccess, TFailure>(this Result<TSuccess, TFailure> result) => result.Do<object?>(t => t, t => t);
 
-    public static Result<TSuccess, TFailure> RetainIf<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, bool> predicate, TFailure replaceWith) => result.MapToResult(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
+    /// <summary>
+    /// Tests the inner Success value against a predicate. If it passes, a new Result is created retaining the value
+    /// If it fails, a new Result.Failure is created with the given failure value
+    /// </summary>
+    /// <param name="result">The result.</param>
+    /// <param name="predicate">The predicate.</param>
+    /// <param name="replaceWith">The value that replaces a Success if it fails the predicate.</param>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TFailure"></typeparam>
+    /// <returns>A new Result which retains the </returns>
+    public static Result<TSuccess, TFailure> RetainIf<TSuccess, TFailure>(
+        this Result<TSuccess, TFailure> result, 
+        Func<TSuccess, bool> predicate, 
+        TFailure replaceWith) 
+        => result.MapToResult(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
+
+    /// <summary>
+    /// Tests the inner Success value against a func which returns a Result type.
+    /// If the return value of func is a Success, a new Result is created which retains the value of the original Result.
+    /// If the result value is a failure, a new Result is created containing the failure value of func.
+    /// </summary>
+    /// <param name="result">The result.</param>
+    /// <param name="predicate">The predicate.</param>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TFailure"></typeparam>
+    /// <typeparam name="TNew"></typeparam>
+    /// <returns></returns>
+    public static Result<TSuccess, TFailure> RetainIf<TSuccess, TNew, TFailure>(
+        this Result<TSuccess, TFailure> result, 
+        Func<TSuccess, Result<TNew, TFailure>> func) 
+        => result.MapToResult(s => func(s).Map(_ => s));
+    
+    public static Task<Result<TSuccess, TFailure>> RetainIfAsync<TSuccess, TNew, TFailure>(
+        this Result<TSuccess, TFailure> result,
+        Func<TSuccess, Task<Result<TNew, TFailure>>> func)
+        => result.MapToResultAsync(async s => (await func(s)).Map(_ => s));
 
     public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, TFailure replaceWith)
     where TSuccess : class? => result.MapToResult(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));

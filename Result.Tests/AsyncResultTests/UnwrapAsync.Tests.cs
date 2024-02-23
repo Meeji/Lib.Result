@@ -27,10 +27,10 @@ public class AsyncResult_UnwrapAsync_Tests
         var async = failure.ToAsyncResult();
 
         var e = Assert.ThrowsAsync<InvalidUnwrapException>(async () => await async.UnwrapAsync(error2));
-        Assert.That(e.Message, Is.EqualTo(error2));
-        Assert.That(e.Result, Is.EqualTo(async));
-        Assert.That(e.Item, Is.EqualTo(error));
-        Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
+        Assert.That(e?.Message, Is.EqualTo(error2));
+        Assert.That(e?.Result, Is.EqualTo(async));
+        Assert.That(e?.Item, Is.EqualTo(error));
+        Assert.That(e?.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
     }
 
     [Test]
@@ -41,9 +41,9 @@ public class AsyncResult_UnwrapAsync_Tests
         var async = failure.ToAsyncResult();
 
         var e = Assert.ThrowsAsync<InvalidUnwrapException>(async () => await async.UnwrapAsync());
-        Assert.That(e.Message, Does.StartWith("Tried to unwrap"));
-        Assert.That(e.Result, Is.EqualTo(async));
-        Assert.That(e.Item, Is.EqualTo(error));
-        Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
+        Assert.That(e?.Message, Does.StartWith("Tried to unwrap"));
+        Assert.That(e?.Result, Is.EqualTo(async));
+        Assert.That(e?.Item, Is.EqualTo(error));
+        Assert.That(e?.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
     }
 }

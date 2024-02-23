@@ -24,10 +24,10 @@ public class OptionalResult_Unwrap_Tests
         var failure = new Failure<object, string>(error);
 
         var e = Assert.Throws<InvalidUnwrapException>(() => failure.Unwrap(error2));
-        Assert.That(e.Message, Is.EqualTo(error2));
-        Assert.That(e.Result, Is.EqualTo(failure));
-        Assert.That(e.Item, Is.EqualTo(error));
-        Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
+        Assert.That(e?.Message, Is.EqualTo(error2));
+        Assert.That(e?.Result, Is.EqualTo(failure));
+        Assert.That(e?.Item, Is.EqualTo(error));
+        Assert.That(e?.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
     }
 
     [Test]
@@ -37,9 +37,9 @@ public class OptionalResult_Unwrap_Tests
         var failure = new Failure<object, string>(error);
 
         var e = Assert.Throws<InvalidUnwrapException>(() => failure.Unwrap());
-        Assert.That(e.Message, Does.StartWith("Tried to unwrap"));
-        Assert.That(e.Result, Is.EqualTo(failure));
-        Assert.That(e.Item, Is.EqualTo(error));
-        Assert.That(e.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
+        Assert.That(e?.Message, Does.StartWith("Tried to unwrap"));
+        Assert.That(e?.Result, Is.EqualTo(failure));
+        Assert.That(e?.Item, Is.EqualTo(error));
+        Assert.That(e?.FailedUnwrapType, Is.EqualTo(InvalidUnwrapException.UnwrapType.Success));
     }
 }

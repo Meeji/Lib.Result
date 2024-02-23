@@ -2,21 +2,21 @@
 
 using System;
 
-public sealed class Failure<TSuccess, TFailure> : Result<TSuccess, TFailure>
+public sealed class Failure<TSuccess, TFailure> : Result<TSuccess, TFailure>, IFailure<TFailure>
 {
-    private readonly TFailure error;
+    public TFailure Value { get; }
 
-    public Failure(TFailure error)
+    public Failure(TFailure value)
     {
-        this.error = error;
+        this.Value = value;
     }
 
     public override bool IsSuccess => false;
 
-    public override TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure) => onFailure(this.error);
+    public override TReturn Do<TReturn>(Func<TSuccess, TReturn> onSuccess, Func<TFailure, TReturn> onFailure) => onFailure(this.Value);
 
     public void Deconstruct(out TFailure failure)
     {
-        failure = this.error;
+        failure = this.Value;
     }
 }
