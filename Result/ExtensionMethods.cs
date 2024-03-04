@@ -144,8 +144,12 @@ public static class ExtensionMethods
         Func<TSuccess, Task<Result<TNew, TFailure>>> func)
         => result.MapToResultAsync(async s => (await func(s)).Map(_ => s));
 
-    public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, TFailure replaceWith)
-    where TSuccess : class? => result.MapToResult(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
+    public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess?, TFailure> result, TFailure replaceWith)
+    where TSuccess : class => result.MapToResult(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
+    
+    public static Task<Result<TSuccess, TFailure>> RetainNotNullAsync<TSuccess, TFailure>(this Task<Result<TSuccess?, TFailure>> result, TFailure replaceWith)
+        where TSuccess : class => result.MapToResultAsync(s => 
+        Task.FromResult(s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s)));
 
     public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action) => result.Do(action, _ => { });
 
