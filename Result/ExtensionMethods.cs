@@ -129,7 +129,7 @@ public static class ExtensionMethods
     /// If the result value is a failure, a new Result is created containing the failure value of func.
     /// </summary>
     /// <param name="result">The result.</param>
-    /// <param name="predicate">The predicate.</param>
+    /// <param name="func">The test function.</param>
     /// <typeparam name="TSuccess"></typeparam>
     /// <typeparam name="TFailure"></typeparam>
     /// <typeparam name="TNew"></typeparam>
