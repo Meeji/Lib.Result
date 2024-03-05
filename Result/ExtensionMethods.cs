@@ -6,11 +6,14 @@ using System.Linq;
 
 public static class ExtensionMethods
 {
-    public static IEnumerable<T> SelectSuccess<T, TF>(this IEnumerable<Result<T, TF>> values) => values.Where(a => a.IsSuccess).Select(a => a.Unwrap());
+    public static IEnumerable<T> SelectSuccess<T, TF>(this IEnumerable<Result<T, TF>> values) 
+        => values.Where(a => a.IsSuccess).Select(a => a.Unwrap());
 
-    public static IEnumerable<TF> SelectFailure<T, TF>(this IEnumerable<Result<T, TF>> values) => values.Where(a => a.IsFailure).Select(a => a.UnwrapError());
+    public static IEnumerable<TF> SelectFailure<T, TF>(this IEnumerable<Result<T, TF>> values) 
+        => values.Where(a => a.IsFailure).Select(a => a.UnwrapError());
 
-    public static Result<IEnumerable<TSuccess>, TFailure> UnwrapAll<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> values)
+    public static Result<IEnumerable<TSuccess>, TFailure> UnwrapAll<TSuccess, TFailure>(
+        this IEnumerable<Result<TSuccess, TFailure>> values)
     {
         var outList = new List<TSuccess>();
         foreach (var val in values)
@@ -28,11 +31,11 @@ public static class ExtensionMethods
         return outList;
     }
 
-    public static Result<TValue, string> TryGetValueAsResult<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
+    public static Result<TValue, CollectionError> TryGetValueAsResult<TKey, TValue>(this IDictionary<TKey, TValue>? dict, TKey key)
     {
         if (dict == null)
         {
-            return "Could not get value from null dictionary";
+            return CollectionError.IsNull;
         }
 
         if (dict.TryGetValue(key, out var outValue))
@@ -40,43 +43,38 @@ public static class ExtensionMethods
             return outValue;
         }
 
-        return string.Format("Dictionary does not contain key: {0}", key);
+        return CollectionError.NoMatchingItems;
     }
 
-    public static Result<T, string> SingleAsResult<T>(this IQueryable<T> values)
+    public static Result<T, CollectionError> SingleAsResult<T>(this IQueryable<T>? values)
     {
         if (values == null)
         {
-            return "SingleAsResult called on null collection";
+            return CollectionError.IsNull;
         }
 
         // To make SingleAsResult efficient when the enumerable underlying it is a database, we attempt to take 2 then see if there are two elements
         // Take(2) should send 'SELECT TOP(2) *' to the database, instead of 'SELECT *' if we use an underlying enumerable
         var list = values.Take(2).ToList();
-        if (list.Count == 2)
+        return list.Count switch
         {
-            return "SingleAsResult called on collection with more than one element";
-        }
-
-        if (list.Count == 0)
-        {
-            return "SingleAsResult called on collection with no elements";
-        }
-
-        return list[0];
+            2 => CollectionError.MultipleMatchingItems,
+            0 => CollectionError.IsEmpty,
+            _ => list[0]
+        };
     }
 
-    public static Result<T, string> SingleAsResult<T>(this IEnumerable<T> values)
+    public static Result<T, CollectionError> SingleAsResult<T>(this IEnumerable<T>? values)
     {
         if (values == null)
         {
-            return "SingleAsResult called on null collection";
+            return CollectionError.IsNull;
         }
 
         using var e = values.GetEnumerator();
         if (!e.MoveNext())
         {
-            return "SingleAsResult called on collection with no elements";
+            return CollectionError.IsEmpty;
         }
 
         var result = e.Current;
@@ -85,15 +83,90 @@ public static class ExtensionMethods
             return result;
         }
 
-        return "SingleAsResult called on collection with more than one element";
+        return CollectionError.MultipleMatchingItems;
+    }
+    
+    public static Result<T, CollectionError> SingleAsResult<T>(this IEnumerable<T>? values, Func<T, bool> predicate)
+    {
+        if (values == null)
+        {
+            return CollectionError.IsNull;
+        }
+        
+        using var e = values.GetEnumerator();
+        if (!e.MoveNext())
+        {
+            return CollectionError.IsEmpty;
+        }
+        
+        var itemFound = false;
+        T item = default!;
+
+        while (e.MoveNext())
+        {
+            if (predicate(e.Current))
+            {
+                if (itemFound)
+                {
+                    return CollectionError.MultipleMatchingItems;
+                }
+
+                itemFound = true;
+                item = e.Current;
+            }
+        }
+
+        if (itemFound)
+        {
+            return item;
+        }
+        
+        return CollectionError.NoMatchingItems;
     }
 
     public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
         where TFailure : Exception => result.Or(exc => throw exc);
 
-    public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(this Result<Result<TSuccess, TFailure>, TFailure> result) => result.MapToResult(t => t);
+    /// <summary>
+    /// Squashes two nested results with matching Failure type into a single Result
+    /// </summary>
+    /// <param name="result"></param>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TFailure"></typeparam>
+    /// <returns></returns>
+    public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(
+        this Result<Result<TSuccess, TFailure>, TFailure> result) => result.MapToResult(t => t);
 
-    public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(this Result<TSuccess, TFailure> result, TFailureNew newValue) => result.Map(success => success, _ => newValue);
+    /// <summary>
+    /// Squashes a enumerable of Result`TS, TF` into a Result`IEnumerable`TS`, TF`
+    /// </summary>
+    /// <param name="results"></param>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TFailure"></typeparam>
+    /// <returns></returns>
+    public static Result<IEnumerable<TSuccess>, TFailure> Squash<TSuccess, TFailure>(
+        this IEnumerable<Result<TSuccess, TFailure>> results)
+    {
+        var list = new List<TSuccess>();
+
+        foreach (var result in results)
+        {
+            if (result is ISuccess<TSuccess> (var success))
+            {
+                list.Add(success);
+            }
+            else
+            {
+                return result.UnwrapError();
+            }
+        }
+
+        return list;
+    }
+
+    public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
+        this Result<TSuccess, TFailure> result, TFailureNew newValue) 
+        => result.Map(success => success, _ => newValue);
 
     public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
         this Result<TSuccess, TFailure> result,
@@ -101,7 +174,9 @@ public static class ExtensionMethods
 
     public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
         this Result<TSuccess, TFailure> result,
-        Func<TFailure, TFailureNew> newValue) => result.Do<Result<TSuccess, TFailureNew>>(success => success, failure => newValue(failure));
+        Func<TFailure, TFailureNew> newValue) => result.Do<Result<TSuccess, TFailureNew>>(
+        success => success, 
+        failure => newValue(failure));
 
     public static T Either<T>(this Result<T, T> result) => result.Do(t => t, t => t);
 
@@ -157,7 +232,7 @@ public static class ExtensionMethods
 
     public static bool TryGetSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess value)
     {
-        if (result is Success<TSuccess, TFailure>(var success))
+        if (result is ISuccess<TSuccess>(var success))
         {
             value = success;
             return true;
@@ -169,7 +244,7 @@ public static class ExtensionMethods
 
     public static bool TryGetFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TFailure value)
     {
-        if (result is Failure<TSuccess, TFailure>(var failure))
+        if (result is IFailure<TFailure>(var failure))
         {
             value = failure;
             return true;
@@ -178,4 +253,10 @@ public static class ExtensionMethods
         value = default!;
         return false;
     }
+
+    public static TSuccess OrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+        where TFailure : Exception =>
+        result.Do(
+            success => success,
+            failure => throw failure);
 }

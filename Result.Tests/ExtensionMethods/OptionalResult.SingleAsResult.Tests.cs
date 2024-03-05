@@ -14,13 +14,28 @@ public class OptionalResult_SingleAsResult_Tests
         Assert.That(result.Unwrap(), Is.EqualTo(1));
     }
 
-    [TestCase(null, "SingleAsResult called on null collection", TestName = "Null Collection")]
-    [TestCase(new int[0], "SingleAsResult called on collection with no elements", TestName = "Empty Collection")]
-    [TestCase(new[] { 1, 2, 3 }, "SingleAsResult called on collection with more than one element", TestName = "Multi-item Collection")]
-    public void ErrorCases(IEnumerable<int> collection, string expectedResult)
+    [TestCase(null, CollectionError.IsNull, TestName = "Null Collection")]
+    [TestCase(new int[0], CollectionError.IsEmpty, TestName = "Empty Collection")]
+    [TestCase(new[] { 1, 2, 3 }, CollectionError.MultipleMatchingItems, TestName = "Multi-item Collection")]
+    public void ErrorCases(IEnumerable<int> collection, CollectionError expectedResult)
     {
         Assert.That(collection.SingleAsResult().UnwrapError(), Is.EqualTo(expectedResult));
+    }
+    
+    [Test]
+    public void Ok_WithFunc()
+    {
+        var result = new[] { 1, 2, 3 }.SingleAsResult(i => i == 2);
 
-        Result<int, Exception> result = Result.Success<int, Exception>(5);
+        Assert.That(result.Unwrap(), Is.EqualTo(2));
+    }
+    
+    [TestCase(null, CollectionError.IsNull, TestName = "Null Collection")]
+    [TestCase(new int[0], CollectionError.IsEmpty, TestName = "Empty Collection")]
+    [TestCase(new[] { 1, 3, 4 }, CollectionError.NoMatchingItems, TestName = "No matching item Collection")]
+    [TestCase(new[] { 1, 2, 2, 3 }, CollectionError.MultipleMatchingItems, TestName = "Multi-item Collection")]
+    public void ErrorCases_WithFunc(IEnumerable<int> collection, CollectionError expectedResult)
+    {
+        Assert.That(collection.SingleAsResult(i => i == 2).UnwrapError(), Is.EqualTo(expectedResult));
     }
 }
