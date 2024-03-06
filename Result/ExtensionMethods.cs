@@ -83,8 +83,8 @@ public static class ExtensionMethods
             return CollectionError.IsEmpty;
         }
         
-        var itemFound = false;
-        T item = default!;
+        var itemFound = predicate(e.Current);
+        var item = e.Current;
 
         while (e.MoveNext())
         {
