@@ -1,4 +1,6 @@
-﻿namespace Result.Tests;
+﻿using Result.Unsafe;
+
+namespace Result.Tests;
 
 using System;
 using System.Collections.Generic;

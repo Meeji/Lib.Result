@@ -1,4 +1,6 @@
-﻿namespace Result.Tests.TaskExtensionMethods;
+﻿using Result.Unsafe;
+
+namespace Result.Tests.TaskExtensionMethods;
 
 using System.Threading.Tasks;
 using NUnit.Framework;

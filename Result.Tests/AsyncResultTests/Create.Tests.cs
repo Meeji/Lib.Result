@@ -1,4 +1,6 @@
-﻿namespace Result.Tests.AsyncResultTestsTests;
+﻿using Result.Unsafe;
+
+namespace Result.Tests.AsyncResultTestsTests;
 
 using System;
 using System.Threading.Tasks;

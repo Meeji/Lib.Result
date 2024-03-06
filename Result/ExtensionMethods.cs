@@ -1,4 +1,6 @@
-﻿namespace Result;
+﻿using Result.Unsafe;
+
+namespace Result;
 
 using System;
 using System.Collections.Generic;
@@ -11,25 +13,6 @@ public static class ExtensionMethods
 
     public static IEnumerable<TF> SelectFailure<T, TF>(this IEnumerable<Result<T, TF>> values) 
         => values.Where(a => a.IsFailure).Select(a => a.UnwrapError());
-
-    public static Result<IEnumerable<TSuccess>, TFailure> UnwrapAll<TSuccess, TFailure>(
-        this IEnumerable<Result<TSuccess, TFailure>> values)
-    {
-        var outList = new List<TSuccess>();
-        foreach (var val in values)
-        {
-            if (val.IsSuccess)
-            {
-                outList.Add(val.Unwrap());
-            }
-            else
-            {
-                return val.UnwrapError();
-            }
-        }
-
-        return outList;
-    }
 
     public static Result<TValue, CollectionError> TryGetValueAsResult<TKey, TValue>(this IDictionary<TKey, TValue>? dict, TKey key)
     {
@@ -123,10 +106,7 @@ public static class ExtensionMethods
         
         return CollectionError.NoMatchingItems;
     }
-
-    public static TSuccess UnwrapOrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-        where TFailure : Exception => result.Or(exc => throw exc);
-
+    
     /// <summary>
     /// Squashes two nested results with matching Failure type into a single Result
     /// </summary>
@@ -180,7 +160,8 @@ public static class ExtensionMethods
 
     public static T Either<T>(this Result<T, T> result) => result.Do(t => t, t => t);
 
-    public static object? Either<TSuccess, TFailure>(this Result<TSuccess, TFailure> result) => result.Do<object?>(t => t, t => t);
+    public static object? Either<TSuccess, TFailure>(this Result<TSuccess, TFailure> result) 
+        => result.Do<object?>(t => t, t => t);
 
     /// <summary>
     /// Tests the inner Success value against a predicate. If it passes, a new Result is created retaining the value
@@ -226,9 +207,11 @@ public static class ExtensionMethods
         where TSuccess : class => result.MapToResultAsync(s => 
         Task.FromResult(s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s)));
 
-    public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action) => result.Do(action, _ => { });
+    public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action) 
+        => result.Do(action, _ => { });
 
-    public static void OnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> action) => result.Do(_ => { }, action);
+    public static void OnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> action) 
+        => result.Do(_ => { }, action);
 
     public static bool TryGetSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess value)
     {
@@ -253,10 +236,4 @@ public static class ExtensionMethods
         value = default!;
         return false;
     }
-
-    public static TSuccess OrThrow<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-        where TFailure : Exception =>
-        result.Do(
-            success => success,
-            failure => throw failure);
 }
