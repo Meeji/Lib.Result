@@ -12,7 +12,7 @@ public class AsyncResult_MapAsync_Tests
         var innerResult = Result.Success<int, string>(1);
         var asyncResult = innerResult.ToAsyncResult();
 
-        var result = await asyncResult.MapAsync(i => i + 1).UnwrapAsync();
+        var result = await asyncResult.ThenAsync(i => i + 1).UnwrapAsync();
         Assert.That(result, Is.EqualTo(2));
     }
 
@@ -22,7 +22,7 @@ public class AsyncResult_MapAsync_Tests
         var innerResult = Result.Success<int, string>(1);
         var asyncResult = innerResult.ToAsyncResult();
 
-        var result = await asyncResult.MapAsync(i => i + 1, f => 0).UnwrapAsync();
+        var result = await asyncResult.ThenAsync(i => i + 1, f => 0).UnwrapAsync();
         Assert.That(result, Is.EqualTo(2));
     }
 }

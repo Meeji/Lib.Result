@@ -29,11 +29,11 @@ public abstract partial class Result<TSuccess, TFailure>
 
     public virtual TSuccess Or(Func<TFailure, TSuccess> defaultItemCalculator) => this.Do(item => item, defaultItemCalculator);
 
-    public virtual Result<TReturn, TFailure> Map<TReturn>(Func<TSuccess, TReturn> bindingAction) => this.Do<Result<TReturn, TFailure>>(item => bindingAction(item), err => err);
+    public virtual Result<TReturn, TFailure> Then<TReturn>(Func<TSuccess, TReturn> bindingAction) => this.Do<Result<TReturn, TFailure>>(item => bindingAction(item), err => err);
 
-    public virtual Result<TNewSuccess, TNewFailure> Map<TNewSuccess, TNewFailure>(
+    public virtual Result<TNewSuccess, TNewFailure> Then<TNewSuccess, TNewFailure>(
         Func<TSuccess, TNewSuccess> successBindingAction,
         Func<TFailure, TNewFailure> failureBindingAction) => this.Do<Result<TNewSuccess, TNewFailure>>(item => successBindingAction(item), err => failureBindingAction(err));
 
-    public virtual Result<TReturn, TFailure> MapToResult<TReturn>(Func<TSuccess, Result<TReturn, TFailure>> bindingAction) => this.Do(bindingAction, err => err);
+    public virtual Result<TReturn, TFailure> Then<TReturn>(Func<TSuccess, Result<TReturn, TFailure>> bindingAction) => this.Do(bindingAction, err => err);
 }

@@ -1,4 +1,5 @@
-﻿using Result.Unsafe;
+﻿using System.Data;
+using Result.Unsafe;
 
 namespace Result;
 
@@ -115,7 +116,7 @@ public static class ExtensionMethods
     /// <typeparam name="TFailure"></typeparam>
     /// <returns></returns>
     public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(
-        this Result<Result<TSuccess, TFailure>, TFailure> result) => result.MapToResult(t => t);
+        this Result<Result<TSuccess, TFailure>, TFailure> result) => result.Then(t => t);
 
     /// <summary>
     /// Squashes a enumerable of Result`TS, TF` into a Result`IEnumerable`TS`, TF`
@@ -146,11 +147,11 @@ public static class ExtensionMethods
 
     public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
         this Result<TSuccess, TFailure> result, TFailureNew newValue) 
-        => result.Map(success => success, _ => newValue);
+        => result.Then(success => success, _ => newValue);
 
     public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
         this Result<TSuccess, TFailure> result,
-        Func<TFailureNew> newValue) => result.Map(success => success, _ => newValue());
+        Func<TFailureNew> newValue) => result.Then(success => success, _ => newValue());
 
     public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
         this Result<TSuccess, TFailure> result,
@@ -177,7 +178,7 @@ public static class ExtensionMethods
         this Result<TSuccess, TFailure> result, 
         Func<TSuccess, bool> predicate, 
         TFailure replaceWith) 
-        => result.MapToResult(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
+        => result.Then(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
 
     /// <summary>
     /// Tests the inner Success value against a func which returns a Result type.
@@ -193,18 +194,18 @@ public static class ExtensionMethods
     public static Result<TSuccess, TFailure> RetainIf<TSuccess, TNew, TFailure>(
         this Result<TSuccess, TFailure> result, 
         Func<TSuccess, Result<TNew, TFailure>> func) 
-        => result.MapToResult(s => func(s).Map(_ => s));
+        => result.Then(s => func(s).Then(_ => s));
     
     public static Task<Result<TSuccess, TFailure>> RetainIfAsync<TSuccess, TNew, TFailure>(
         this Result<TSuccess, TFailure> result,
         Func<TSuccess, Task<Result<TNew, TFailure>>> func)
-        => result.MapToResultAsync(async s => (await func(s)).Map(_ => s));
+        => result.ThenAsync(async s => (await func(s)).Then(_ => s));
 
     public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess?, TFailure> result, TFailure replaceWith)
-    where TSuccess : class => result.MapToResult(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
+    where TSuccess : class => result.Then(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
     
     public static Task<Result<TSuccess, TFailure>> RetainNotNullAsync<TSuccess, TFailure>(this Task<Result<TSuccess?, TFailure>> result, TFailure replaceWith)
-        where TSuccess : class => result.MapToResultAsync(s => 
+        where TSuccess : class => result.ThenAsync(s => 
         Task.FromResult(s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s)));
 
     public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action) 
@@ -236,4 +237,8 @@ public static class ExtensionMethods
         value = default!;
         return false;
     }
+
+    public static Result<TNew, TFailure> Replace<TNew, TSuccess, TFailure>
+        (this Result<TSuccess, TFailure> result, TNew value)
+        => result.Then(_ => value);
 }

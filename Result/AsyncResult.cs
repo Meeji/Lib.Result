@@ -25,23 +25,23 @@ public class AsyncResult<TSuccess, TFailure>
         result.Do(onSuccess, onFailure);
     }
 
-    public AsyncResult<TNew, TFailure> MapAsync<TNew>(Func<TSuccess, TNew> bindingFunc)
+    public AsyncResult<TNew, TFailure> ThenAsync<TNew>(Func<TSuccess, TNew> bindingFunc)
     {
-        var result = ContinueWith(this.task, r => r.Map(bindingFunc));
+        var result = ContinueWith(this.task, r => r.Then(bindingFunc));
         return new AsyncResult<TNew, TFailure>(result);
     }
 
-    public virtual AsyncResult<TNewSuccess, TNewFailure> MapAsync<TNewSuccess, TNewFailure>(
+    public virtual AsyncResult<TNewSuccess, TNewFailure> ThenAsync<TNewSuccess, TNewFailure>(
         Func<TSuccess, TNewSuccess> successBindingAction,
         Func<TFailure, TNewFailure> failureBindingAction)
     {
-        var result = ContinueWith(this.task, r => r.Map(successBindingAction, failureBindingAction));
+        var result = ContinueWith(this.task, r => r.Then(successBindingAction, failureBindingAction));
         return new AsyncResult<TNewSuccess, TNewFailure>(result);
     }
 
-    public AsyncResult<TNew, TFailure> MapToResultAsync<TNew>(Func<TSuccess, Result<TNew, TFailure>> bindingFunc)
+    public AsyncResult<TNew, TFailure> ThenAsync<TNew>(Func<TSuccess, Result<TNew, TFailure>> bindingFunc)
     {
-        var result = ContinueWith(this.task, r => r.MapToResult(bindingFunc));
+        var result = ContinueWith(this.task, r => r.Then(bindingFunc));
         return new AsyncResult<TNew, TFailure>(result);
     }
 
