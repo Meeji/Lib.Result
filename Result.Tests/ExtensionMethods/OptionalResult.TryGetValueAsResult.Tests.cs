@@ -1,4 +1,6 @@
-﻿namespace Result.Tests;
+﻿using Result.Unsafe;
+
+namespace Result.Tests;
 
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -20,13 +22,13 @@ public class OptionalResult_TryGetValueAsResult_Tests
         IDictionary<int, int>? dict = null;
 
         // ReSharper disable once ExpressionIsAlwaysNull
-        Assert.That(dict!.TryGetValueAsResult(1).UnwrapError(), Is.EqualTo("Could not get value from null dictionary"));
+        Assert.That(dict!.TryGetValueAsResult(1).UnwrapError(), Is.EqualTo(CollectionError.IsNull));
     }
 
     [Test]
     public void NoMatchingKey()
     {
         var dict = new Dictionary<int, int>();
-        Assert.That(dict.TryGetValueAsResult(1).UnwrapError(), Is.EqualTo("Dictionary does not contain key: 1"));
+        Assert.That(dict.TryGetValueAsResult(1).UnwrapError(), Is.EqualTo(CollectionError.NoMatchingItems));
     }
 }

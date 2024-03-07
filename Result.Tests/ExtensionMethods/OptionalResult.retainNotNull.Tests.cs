@@ -1,4 +1,6 @@
-﻿namespace Result.Tests;
+﻿using Result.Unsafe;
+
+namespace Result.Tests;
 
 using NUnit.Framework;
 
@@ -8,7 +10,7 @@ public class OptionalResult_RetainNotNull_Tests
     [Test]
     public void Ok_True()
     {
-        var result = new Success<object, string>(new { test = 6 });
+        var result = new Success<object?, string>(new { test = 6 });
         var newResult = result.RetainNotNull("error!");
 
         Assert.That(result.Unwrap(), Is.EqualTo(newResult.Unwrap()));

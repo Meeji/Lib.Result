@@ -20,7 +20,7 @@ public class OptionalResult_Do_Func_Tests
             onSuccess: o => o,
             onFailure: err => new object());
 
-        Assert.That(Obj, Is.EqualTo(result));
+        Assert.That(result, Is.EqualTo(Obj));
     }
 
     [Test]
@@ -30,6 +30,6 @@ public class OptionalResult_Do_Func_Tests
             onSuccess: o => string.Empty,
             onFailure: err => err);
 
-        Assert.That(Error, Is.EqualTo(result));
+        Assert.That(result, Is.EqualTo(Error));
     }
 }

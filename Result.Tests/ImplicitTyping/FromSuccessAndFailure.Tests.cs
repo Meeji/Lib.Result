@@ -1,4 +1,6 @@
-﻿namespace Result.Tests;
+﻿using Result.Unsafe;
+
+namespace Result.Tests;
 
 using NUnit.Framework;
 
@@ -9,7 +11,7 @@ public class OptionalResult_FromSuccessAndFailure_Tests
     public void Ok_Success()
     {
         var success = GetResult(true);
-
+        
         Assert.IsInstanceOf<Success<int, string>>(success);
         Assert.That(success.Unwrap(), Is.EqualTo(5));
     }

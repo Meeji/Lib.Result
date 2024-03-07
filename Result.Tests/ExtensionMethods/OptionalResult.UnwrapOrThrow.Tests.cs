@@ -1,10 +1,12 @@
-﻿namespace Result.Tests;
+﻿using Result.Unsafe;
+
+namespace Result.Tests;
 
 using System;
 using NUnit.Framework;
 
 [TestFixture]
-public class OptionalResult_UnwrapOrThrow_Tests
+public class OptionalResult_OrThrow_Tests
 {
     [Test]
     public void Ok_NormalExcetion()
@@ -12,7 +14,7 @@ public class OptionalResult_UnwrapOrThrow_Tests
         var exception = new Exception();
         Result<int, Exception> result = new Failure<int, Exception>(exception);
 
-        var exc = Assert.Throws<Exception>(() => result.UnwrapOrThrow());
+        var exc = Assert.Throws<Exception>(() => result.OrThrow());
 
         Assert.That(exception, Is.EqualTo(exc));
     }
@@ -23,7 +25,7 @@ public class OptionalResult_UnwrapOrThrow_Tests
         var exception = new AccessViolationException();
         Result<int, AccessViolationException> result = new Failure<int, AccessViolationException>(exception);
 
-        var exc = Assert.Throws<AccessViolationException>(() => result.UnwrapOrThrow());
+        var exc = Assert.Throws<AccessViolationException>(() => result.OrThrow());
 
         Assert.That(exception, Is.EqualTo(exc));
     }
@@ -33,6 +35,6 @@ public class OptionalResult_UnwrapOrThrow_Tests
     {
         Result<int, Exception> result = new Success<int, Exception>(5);
 
-        Assert.That(result.UnwrapOrThrow(), Is.EqualTo(5));
+        Assert.That(result.OrThrow(), Is.EqualTo(5));
     }
 }
