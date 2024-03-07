@@ -1,6 +1,6 @@
-﻿using Result.Exceptions;
+﻿namespace Result.Unsafe;
 
-namespace Result.Unsafe;
+using Exceptions;
 
 public static class ResultExtensionMethods
 {

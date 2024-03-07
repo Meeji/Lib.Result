@@ -1,7 +1,6 @@
 ﻿namespace Result;
 
 using System;
-using Exceptions;
 
 public abstract partial class Result<TSuccess, TFailure>
 {

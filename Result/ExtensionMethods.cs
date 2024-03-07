@@ -1,11 +1,9 @@
-﻿using System.Data;
-using Result.Unsafe;
-
-namespace Result;
+﻿namespace Result;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unsafe;
 
 public static class ExtensionMethods
 {
@@ -249,7 +247,7 @@ public static class ExtensionMethods
         Func<TNew, TNew, TNew> aggregator = null!) =>
         result.Then(inners =>
         {
-            aggregator = aggregator ?? ((i, j) => j);
+            aggregator ??= ((i, j) => j);
             var last = seed;
 
             foreach (var inner in inners)
@@ -273,7 +271,7 @@ public static class ExtensionMethods
         Func<TNew, TNew, TNew> aggregator = null!) =>
         result.ThenAsync(async inners =>
         {
-            aggregator = aggregator ?? ((i, j) => j);
+            aggregator ??= ((i, j) => j);
             var last = seed;
 
             foreach (var inner in inners)
@@ -284,7 +282,7 @@ public static class ExtensionMethods
                     return (Result<TNew, TFailure>)fail;
                 }
 
-                last = aggregator(last, ((ISuccess<TNew>)funcResult).Value);;
+                last = aggregator(last, ((ISuccess<TNew>)funcResult).Value);
             }
 
             return last;
