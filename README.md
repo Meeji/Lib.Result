@@ -21,39 +21,41 @@ public static Result<Customer, string> GetCustomer(int id)
 }
 ```
 
-Once we've got a `Result` type in hand it can be handled in several ways. The result type forces us to explicitly handle the possibility of an error state (even if we only handle it by saying 'assume success or throw'):
+Once we've got a `Result` type in hand it can be handled in several ways. We can apply continuations to the resultThe result type forces us to explicitly handle the possibility of an error state (even if we only handle it by saying 'assume success or throw'):
 
 ```csharp
-// Give the type an Action to perform on success, and another on failure
-var customerResult = GetCustomer(10);
-customerResult.Do(
+var result = GetCustomer(10)                // a Result<Customer, string>
+    .RetainIf(c => c.IsActive, "Inactive")  // Continuation: Filter inner value
+    .Then(c => GetOrders(c));               // Continuation: Do work using inner value
+
+// Resolve: Give an Action to perform on success, and another on failure
+result.Do(
     onSuccess: customer => Console.WriteLine($"Customer name is: {customer.Name}"),
     onFailure: error    => Console.WriteLine($"Error! {error}"));
 
 // If passed Funcs the results can be assigned:
-var gotCustomer = customerResult.Do(
+var gotCustomerOrders = result.Do(
     customer => true,
     error    => false);
 
 // There is a shortcut for the example above:
-gotCustomer = customerResult.IsSuccess;
-gotCustomer = !customerResult.IsFailure;
+gotCustomerOrders = result.IsSuccess; // And matching IsFailure
 
 // We can assume success and attempt to unwrap the inner value.
 // This will throw if our assumption is incorrect.
 // Operations which might throw an exception are in the Unsafe namespace.
-var customer = customerResult.Unwrap();
+var value = result.Unwrap();
 
-// To be a bit safer we can provide a default value - in this case null
-customer = customerResult.Or(null);
+// To be a safer we can provide a default value - in this case null
+value = result.Or(null);
 
 // Or provide the default through a func
-customer = customerResult.Or(() => new Customer());
+value = result.Or(() => GetDefault());
 
 // Or safely retrieve the customer through pattern matching
-if (customerResult is ISuccess<Customer>(var c))
+if (result is ISuccess<Order>(var o))
 {
-    customer = c;
+    value = o;
 }
 
 // We can also assume there was an error.
@@ -61,12 +63,12 @@ if (customerResult is ISuccess<Customer>(var c))
 var error = customerResult.UnwrapError();
 ```
 
-## ```Result``` workflow
-The ```Result``` type allows you to 'use' the inner value without unwrapping it using several ```Bind``` methods.
+## `Result` workflow
+The `Result` type allows you to 'use' the inner value without unwrapping it using `Then`.
 
 ```csharp
 var five = 5;
-var successFive = (Result<int, string>)five; // Could also have used 'Result.Success<int, string>(five)' or 'new Success<int, string>(five)';
+var successFive = (Result<int, string>)five;   // Could also have used 'Result.Success<int, string>(five)' or 'new Success<int, string>(five)';
 var successTen = successFive.Then(i => i + 5); // Value is mutated without unwrapping
 if (successTen is ISuccess<int>(var value))
 {
@@ -78,7 +80,7 @@ var failureTen = failureFive.Then(i => i + 5); // Value is mutated without unwra
 failureTen.UnwrapError(); // "some error"!
 ```
 
-But why is that helpful? It creates a nice workflow when you're working with chains of methods that might want to do work with a value, but might also fail.
+This creates a nice workflow when you're working with chains of methods that might want to do work with a value, but might also fail.
 Consider the (highly contrived) example below where you must get a customer, then the customer's address, then orders for that address. The resulting method might look like:
 
 ```csharp
@@ -114,17 +116,14 @@ public static IList<Order> GetOrdersForCustomer(int id) {
 Yes, I know. You wouldn't actually write code like that. But it illustrates how error handling often works in C#: there are multiple exit points from a method, most of them dealing with the many ways a method like this can fail. If each of these methods returned a ```Result<TSuccess, TFailure>``` type with a common ```TFailure``` (say a RetrievalError DO, an Exception, or an Enum), the code could be simplified to:
 
 ```csharp
-public static IList<Order> GetOrdersForCustomer(int id) {
-    // BindToResult works like Bind, but expects a Result<TSuccess, TFailure>
-    // where TFailure matches with the current Result
-    return GetCustomer(id)        // We have a Result<Customer, TFailure>
-        .Then(GetAddress) // Now a Result<Address, TFailure>
-        .Then(GetOrders)  // And now a Result<IList<Orders>, TFailure>
+public static IList<Order> GetOrdersForCustomer(int id) =>
+    GetCustomer(id)       // Start flow: We have a Result<Customer, TFailure>
+        .Then(GetAddress) // Continuation: Now a Result<Address, TFailure>
+        .Then(GetOrders)  // Continuation: And now a Result<IList<Orders>, TFailure>
         .Or(error => /* Handle error case */); // Handle TFailure in error case
-}
 ```
 
-This compresses the code by removing a lot of boilerplate and moves the error handling to a single place. This style of pushing errors down to the end of the method and handling them there has been called 'railway oriented programming' and Scott Wlaschin did a talk on it you can find [here](https://vimeo.com/113707214) if you're interested.
+This compresses the code by removing a lot of boilerplate and moves the error handling to a single place. This style of pushing errors down to the end of the method and handling them there has been called 'railway oriented programming' and Scott Wlaschin did a talk on it you can find [here](https://vimeo.com/113707214) which is a good explanation of the pattern.
 
 ## Pattern Matching
 Both `Success` and `Failure` types can be deconstructed to retrieve their inner values:
@@ -132,7 +131,7 @@ Both `Success` and `Failure` types can be deconstructed to retrieve their inner 
 ```csharp
 if (result is Failure<int, Exception>(var exc))
 {
-    throw new Exception("Oh no!", exc);
+    throw exc;
 }
 ```
 
@@ -164,13 +163,13 @@ var numberString = result switch
 ```
 
 ## Async
-
-Many extension methods have async versions that work the same way `Task<Result<T1, T2>>` that they're synchronous version does on `Result<T1, T2>`. This allows you to transparently work with a running task as if it were a value.
+Many extension methods have async versions that work the same way with a `Task<Result<T1, T2>>` that the synchronous version does on a `Result<T1, T2>`. This allows you to transparently work with a running task as if it were a value.
 
 ```csharp
-var value = await GetCustomerAsync()     // Start async workflow
-    .ThenAsync(c => GetOrdersAsync(c))   // A continuation
-    .DoAsync(                            // A resolution
+var value = await GetCustomerAsync()       // Start async workflow
+    .RetainNotNullAsync("Unexpected null") // Continuation: filter
+    .ThenAsync(c => GetOrdersAsync(c))     // A continuation
+    .DoAsync(                              // A resolution
         orders => ProcessOrders(orders),    
         error => HandleError(error));
 ```
