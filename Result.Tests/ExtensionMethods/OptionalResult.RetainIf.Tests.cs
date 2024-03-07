@@ -1,8 +1,7 @@
-﻿using Result.Unsafe;
-
-namespace Result.Tests;
+﻿namespace Result.Tests;
 
 using NUnit.Framework;
+using Unsafe;
 
 [TestFixture]
 public class OptionalResult_RetainIf_Tests
@@ -35,6 +34,17 @@ public class OptionalResult_RetainIf_Tests
         var newResult = result.RetainIf(i => i < 6, error);
 
         Assert.That(newResult.UnwrapError(), Is.EqualTo(error));
+    }
+    
+    [Test]
+    public void Ok_SquashFailure_WithFunc()
+    {
+        const string error = "error!";
+        var inner = 9;
+        var result = new Success<int, string>(inner);
+        var newResult = result.RetainIf(i => i < 6, i => $"{error} {i}");
+
+        Assert.That(newResult.UnwrapError(), Is.EqualTo($"{error} {inner}"));
     }
     
     [Test]

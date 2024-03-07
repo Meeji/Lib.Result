@@ -12,6 +12,12 @@ public static class ExtensionMethods
         Func<TSuccess, TOutput> onSuccess,
         Func<TFailure, TOutput> onFailure) =>
         (await task).Do(onSuccess, onFailure);
+    
+    public static async Task<TOutput> DoAsync<TSuccess, TFailure, TOutput>(
+        this Task<Result<TSuccess, TFailure>> task, 
+        Func<TSuccess, Task<TOutput>> onSuccess,
+        Func<TFailure, Task<TOutput>> onFailure) =>
+        await (await task).Do(onSuccess, onFailure);
 
     public static IEnumerable<T> SelectSuccess<T, TF>(this IEnumerable<Result<T, TF>> values) 
         => values.Where(a => a.IsSuccess).Select(a => a.Unwrap());
