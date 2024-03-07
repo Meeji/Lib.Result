@@ -25,4 +25,10 @@ public static class ResultExtensionMethods
         result.Do(
             success => success,
             failure => throw failure);
+    
+    public static Task<TSuccess> OrThrowAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
+        where TFailure : Exception =>
+        result.DoAsync(
+            success => success,
+            failure => throw failure);
 }

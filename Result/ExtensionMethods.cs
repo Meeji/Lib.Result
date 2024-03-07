@@ -7,6 +7,12 @@ using Unsafe;
 
 public static class ExtensionMethods
 {
+    public static async Task<TOutput> DoAsync<TSuccess, TFailure, TOutput>(
+        this Task<Result<TSuccess, TFailure>> task, 
+        Func<TSuccess, TOutput> onSuccess,
+        Func<TFailure, TOutput> onFailure) =>
+        (await task).Do(onSuccess, onFailure);
+
     public static IEnumerable<T> SelectSuccess<T, TF>(this IEnumerable<Result<T, TF>> values) 
         => values.Where(a => a.IsSuccess).Select(a => a.Unwrap());
 
@@ -177,6 +183,22 @@ public static class ExtensionMethods
         Func<TSuccess, bool> predicate, 
         TFailure replaceWith) 
         => result.Then(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceWith);
+
+    /// <summary>
+    /// Tests the inner Success value against a predicate. If it passes, a new Result is created retaining the value
+    /// If it fails, a new Result.Failure is created with the given failure value
+    /// </summary>
+    /// <param name="result">The result.</param>
+    /// <param name="predicate">The predicate.</param>
+    /// <param name="replaceFunc">Func to generate a value to replace the Success that failed the preicate</param>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TFailure"></typeparam>
+    /// <returns>A new Result which retains the </returns>
+    public static Result<TSuccess, TFailure> RetainIf<TSuccess, TFailure>(
+        this Result<TSuccess, TFailure> result, 
+        Func<TSuccess, bool> predicate, 
+        Func<TSuccess, TFailure> replaceFunc) 
+        => result.Then(s => predicate(s) ? Result.Success<TSuccess, TFailure>(s) : replaceFunc(s));
 
     /// <summary>
     /// Tests the inner Success value against a func which returns a Result type.

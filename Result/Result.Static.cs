@@ -121,47 +121,47 @@ public static class Result
                                             r9 => result10.Then<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5, T6 r6, T7 r7, T8 r8, T9 r9, T10 r10)>(
                                                 r10 => (r1, r2, r3, r4, r5, r6, r7, r8, r9, r10)))))))))));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2), TFailure> result,
         Func<T1, T2, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2));
     
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3), TFailure> result,
         Func<T1, T2, T3, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3));
     
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4), TFailure> result,
         Func<T1, T2, T3, T4, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, T5, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, T5, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5), TFailure> result,
         Func<T1, T2, T3, T4, T5, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4, i.r5));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, T5, T6, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, T5, T6, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5, T6 r6), TFailure> result,
         Func<T1, T2, T3, T4, T5, T6, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4, i.r5, i.r6));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, T5, T6, T7, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, T5, T6, T7, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5, T6 r6, T7 r7), TFailure> result,
         Func<T1, T2, T3, T4, T5, T6, T7, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4, i.r5, i.r6, i.r7));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, T5, T6, T7, T8, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, T5, T6, T7, T8, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5, T6 r6, T7 r7, T8 r8), TFailure> result,
         Func<T1, T2, T3, T4, T5, T6, T7, T8, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4, i.r5, i.r6, i.r7, i.r8));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, T5, T6, T7, T8, T9, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, T5, T6, T7, T8, T9, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5, T6 r6, T7 r7, T8 r8, T9 r9), TFailure> result,
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4, i.r5, i.r6, i.r7, i.r8, i.r9));
 
-    public static Result<TOutput, TFailure> Into<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TOutput, TFailure>(
+    public static Result<TOutput, TFailure> Then<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TOutput, TFailure>(
         this Result<(T1 r1, T2 r2, T3 r3, T4 r4, T5 r5, T6 r6, T7 r7, T8 r8, T9 r9, T10 r10), TFailure> result,
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, Result<TOutput, TFailure>> func) =>
         result.Then(i => func(i.r1, i.r2, i.r3, i.r4, i.r5, i.r6, i.r7, i.r8, i.r9, i.r10));

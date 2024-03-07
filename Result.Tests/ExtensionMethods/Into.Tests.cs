@@ -48,15 +48,15 @@ public class Into_Tests
         var result10 = Result.Success<Tuple10, string>((1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         Assert.Multiple(() =>
         {
-            Assert.That(result2.Into(Success2).Unwrap(), Is.EqualTo(new[] { 1, 2 }));
-            Assert.That(result3.Into(Success3).Unwrap(), Is.EqualTo(new[] { 1, 2, 3 }));
-            Assert.That(result4.Into(Success4).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4 }));
-            Assert.That(result5.Into(Success5).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5 }));
-            Assert.That(result6.Into(Success6).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6 }));
-            Assert.That(result7.Into(Success7).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7 }));
-            Assert.That(result8.Into(Success8).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
-            Assert.That(result9.Into(Success9).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
-            Assert.That(result10.Into(Success10).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }));
+            Assert.That(result2.Then(Success2).Unwrap(), Is.EqualTo(new[] { 1, 2 }));
+            Assert.That(result3.Then(Success3).Unwrap(), Is.EqualTo(new[] { 1, 2, 3 }));
+            Assert.That(result4.Then(Success4).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4 }));
+            Assert.That(result5.Then(Success5).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5 }));
+            Assert.That(result6.Then(Success6).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6 }));
+            Assert.That(result7.Then(Success7).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7 }));
+            Assert.That(result8.Then(Success8).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
+            Assert.That(result9.Then(Success9).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
+            Assert.That(result10.Then(Success10).Unwrap(), Is.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }));
         });
     }
     
@@ -74,15 +74,15 @@ public class Into_Tests
         var result10 = Result.Failure<Tuple10, string>("foo");
         Assert.Multiple(() =>
         {
-            Assert.That(result2.Into(Success2).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result3.Into(Success3).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result4.Into(Success4).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result5.Into(Success5).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result6.Into(Success6).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result7.Into(Success7).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result8.Into(Success8).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result9.Into(Success9).UnwrapError(), Is.EqualTo("foo"));
-            Assert.That(result10.Into(Success10).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result2.Then(Success2).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result3.Then(Success3).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result4.Then(Success4).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result5.Then(Success5).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result6.Then(Success6).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result7.Then(Success7).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result8.Then(Success8).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result9.Then(Success9).UnwrapError(), Is.EqualTo("foo"));
+            Assert.That(result10.Then(Success10).UnwrapError(), Is.EqualTo("foo"));
         });
     }
     
@@ -100,15 +100,15 @@ public class Into_Tests
         var result10 = Result.Success<Tuple10, string>((1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         Assert.Multiple(() =>
         {
-            Assert.That(result2.Into(Failure2).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result3.Into(Failure3).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result4.Into(Failure4).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result5.Into(Failure5).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result6.Into(Failure6).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result7.Into(Failure7).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result8.Into(Failure8).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result9.Into(Failure9).UnwrapError(), Is.EqualTo("error"));
-            Assert.That(result10.Into(Failure10).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result2.Then(Failure2).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result3.Then(Failure3).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result4.Then(Failure4).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result5.Then(Failure5).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result6.Then(Failure6).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result7.Then(Failure7).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result8.Then(Failure8).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result9.Then(Failure9).UnwrapError(), Is.EqualTo("error"));
+            Assert.That(result10.Then(Failure10).UnwrapError(), Is.EqualTo("error"));
         });
     }
 }
