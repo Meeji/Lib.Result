@@ -13,7 +13,7 @@ public class OptionalResult_Squash_Tests
         var result = new Success<int, string>(9);
         var nestedResult = new Success<Result<int, string>, string>(result);
 
-        var squashed = nestedResult.Squash();
+        var squashed = nestedResult.Flatten();
         Assert.That(result, Is.EqualTo(squashed));
     }
 
@@ -23,7 +23,7 @@ public class OptionalResult_Squash_Tests
         var result = "bad things";
         var nestedResult = new Failure<Result<int, string>, string>(result);
 
-        var squashed = nestedResult.Squash().UnwrapError();
+        var squashed = nestedResult.Flatten().UnwrapError();
         Assert.That(result, Is.EqualTo(squashed));
     }
     
@@ -32,7 +32,7 @@ public class OptionalResult_Squash_Tests
     {
         List<Result<int, string>> result = [ ];
 
-        var squashed = result.Squash();
+        var squashed = result.Flatten();
         Assert.That(squashed.Unwrap(), Is.EqualTo(Array.Empty<int>()));
     }
     
@@ -41,7 +41,7 @@ public class OptionalResult_Squash_Tests
     {
         Result<int, string>[] result = [ 9 ];
 
-        var squashed = result.Squash();
+        var squashed = result.Flatten();
         Assert.That(squashed.Unwrap(), Is.EqualTo(new[] { 9 }));
     }
     
@@ -50,7 +50,7 @@ public class OptionalResult_Squash_Tests
     {
         Result<int, string>[] result = [ 9, 8, 7, 6 ];
 
-        var squashed = result.Squash();
+        var squashed = result.Flatten();
         Assert.That(squashed.Unwrap(), Is.EqualTo(new[] { 9, 8, 7, 6 }));
     }
     
@@ -59,7 +59,7 @@ public class OptionalResult_Squash_Tests
     {
         Result<int, string>[] result = [ "foo" ];
 
-        var squashed = result.Squash();
+        var squashed = result.Flatten();
         Assert.That(squashed.UnwrapError(), Is.EqualTo("foo"));
     }
     
@@ -68,7 +68,7 @@ public class OptionalResult_Squash_Tests
     {
         Result<int, string>[] result = [ "foo", "bar", "baz" ];
 
-        var squashed = result.Squash();
+        var squashed = result.Flatten();
         Assert.That(squashed.UnwrapError(), Is.EqualTo("foo"));
     }
     
@@ -77,7 +77,7 @@ public class OptionalResult_Squash_Tests
     {
         Result<int, string>[] result = [ 1, 2, 3, "foo", 4, 5, "bar", 6 ];
 
-        var squashed = result.Squash();
+        var squashed = result.Flatten();
         Assert.That(squashed.UnwrapError(), Is.EqualTo("foo"));
     }
 }

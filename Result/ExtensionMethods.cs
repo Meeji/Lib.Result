@@ -109,23 +109,23 @@ public static class ExtensionMethods
     }
     
     /// <summary>
-    /// Squashes two nested results with matching Failure type into a single Result
+    /// Flattens two nested results with matching Failure type into a single Result
     /// </summary>
     /// <param name="result"></param>
     /// <typeparam name="TSuccess"></typeparam>
     /// <typeparam name="TFailure"></typeparam>
     /// <returns></returns>
-    public static Result<TSuccess, TFailure> Squash<TSuccess, TFailure>(
+    public static Result<TSuccess, TFailure> Flatten<TSuccess, TFailure>(
         this Result<Result<TSuccess, TFailure>, TFailure> result) => result.Then(t => t);
 
     /// <summary>
-    /// Squashes a enumerable of Result`TS, TF` into a Result`IEnumerable`TS`, TF`
+    /// Flattens a enumerable of Result`TS, TF` into a Result`IEnumerable`TS`, TF`
     /// </summary>
     /// <param name="results"></param>
     /// <typeparam name="TSuccess"></typeparam>
     /// <typeparam name="TFailure"></typeparam>
     /// <returns></returns>
-    public static Result<IEnumerable<TSuccess>, TFailure> Squash<TSuccess, TFailure>(
+    public static Result<IEnumerable<TSuccess>, TFailure> Flatten<TSuccess, TFailure>(
         this IEnumerable<Result<TSuccess, TFailure>> results)
     {
         var list = new List<TSuccess>();
@@ -241,4 +241,52 @@ public static class ExtensionMethods
     public static Result<TNew, TFailure> Replace<TNew, TSuccess, TFailure>
         (this Result<TSuccess, TFailure> result, TNew value)
         => result.Then(_ => value);
+
+    public static Result<TNew, TFailure> Aggregate<TNew, TSuccess, TFailure>(
+        this Result<IEnumerable<TSuccess>, TFailure> result,
+        TNew seed,
+        Func<TSuccess, Result<TNew, TFailure>> func,
+        Func<TNew, TNew, TNew> aggregator = null!) =>
+        result.Then(inners =>
+        {
+            aggregator = aggregator ?? ((i, j) => j);
+            var last = seed;
+
+            foreach (var inner in inners)
+            {
+                var funcResult = func(inner);
+                if (funcResult is IFailure<TFailure> fail)
+                {
+                    return (Result<TNew, TFailure>)fail;
+                }
+
+                last = aggregator(last, ((ISuccess<TNew>)funcResult).Value);
+            }
+
+            return last;
+        });
+    
+    public static Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess,  TFailure>(
+        this Result<IEnumerable<TSuccess>, TFailure> result,
+        TNew seed,
+        Func<TSuccess, Task<Result<TNew, TFailure>>> func,
+        Func<TNew, TNew, TNew> aggregator = null!) =>
+        result.ThenAsync(async inners =>
+        {
+            aggregator = aggregator ?? ((i, j) => j);
+            var last = seed;
+
+            foreach (var inner in inners)
+            {
+                var funcResult = await func(inner);
+                if (funcResult is IFailure<TFailure> fail)
+                {
+                    return (Result<TNew, TFailure>)fail;
+                }
+
+                last = aggregator(last, ((ISuccess<TNew>)funcResult).Value);;
+            }
+
+            return last;
+        });
 }
