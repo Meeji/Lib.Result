@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Unsafe;
 
 public static class ExtensionMethods
@@ -319,6 +320,24 @@ public static class ExtensionMethods
 
             return last;
         });
+
+    public static async Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess, TFailure>(
+        this Task<Result<IEnumerable<TSuccess>, TFailure>> result,
+        TNew seed,
+        Func<TSuccess, Task<Result<TNew, TFailure>>> func,
+        Func<TNew, TNew, TNew> aggregator = null!)
+    {
+        return await (await result).AggregateAsync(seed, func, aggregator);
+    }
+    
+    public static async Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess, TFailure>(
+        this Task<Result<IEnumerable<TSuccess>, TFailure>> result,
+        TNew seed,
+        Func<TSuccess, Result<TNew, TFailure>> func,
+        Func<TNew, TNew, TNew> aggregator = null!)
+    {
+        return (await result).Aggregate(seed, func, aggregator);
+    }
     
     public static Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess,  TFailure>(
         this Result<IEnumerable<TSuccess>, TFailure> result,
