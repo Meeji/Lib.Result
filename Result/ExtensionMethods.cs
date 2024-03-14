@@ -154,6 +154,34 @@ public static class ExtensionMethods
 
         return list;
     }
+    
+    /// <summary>
+    /// Flattens a enumerable of Result`TS, TF` into a Result`IEnumerable`TS`, TF`
+    /// </summary>
+    /// <param name="results"></param>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TFailure"></typeparam>
+    /// <returns></returns>
+    public static async Task<Result<IEnumerable<TSuccess>, TFailure>> FlattenAsync<TSuccess, TFailure>(
+        this IEnumerable<Task<Result<TSuccess, TFailure>>> results)
+    {
+        var list = new List<TSuccess>();
+
+        foreach (var resultTask in results)
+        {
+            var result = await resultTask;
+            if (result is ISuccess<TSuccess> (var success))
+            {
+                list.Add(success);
+            }
+            else
+            {
+                return result.UnwrapError();
+            }
+        }
+
+        return list;
+    }
 
     public static Result<TSuccess, TFailureNew> ChangeFailure<TSuccess, TFailure, TFailureNew>(
         this Result<TSuccess, TFailure> result, TFailureNew newValue) 
