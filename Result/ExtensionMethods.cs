@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Unsafe;
 
 public static class ExtensionMethods
@@ -225,7 +224,7 @@ public static class ExtensionMethods
     /// </summary>
     /// <param name="result">The result.</param>
     /// <param name="predicate">The predicate.</param>
-    /// <param name="replaceFunc">Func to generate a value to replace the Success that failed the preicate</param>
+    /// <param name="replaceFunc">Func to generate a value to replace the Success that failed the predicate</param>
     /// <typeparam name="TSuccess"></typeparam>
     /// <typeparam name="TFailure"></typeparam>
     /// <returns>A new Result which retains the </returns>
@@ -258,10 +257,11 @@ public static class ExtensionMethods
 
     public static Result<TSuccess, TFailure> RetainNotNull<TSuccess, TFailure>(this Result<TSuccess?, TFailure> result, TFailure replaceWith)
     where TSuccess : class => result.Then(s => s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
-    
-    public static Task<Result<TSuccess, TFailure>> RetainNotNullAsync<TSuccess, TFailure>(this Task<Result<TSuccess?, TFailure>> result, TFailure replaceWith)
-        where TSuccess : class => result.ThenAsync(s => 
-        Task.FromResult(s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s)));
+
+    public static Task<Result<TSuccess, TFailure>> RetainNotNullAsync<TSuccess, TFailure>(
+        this Task<Result<TSuccess?, TFailure>> result, TFailure replaceWith)
+        where TSuccess : class => result.ThenAsync(s =>
+        s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
 
     public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action) 
         => result.Do(action, _ => { });
@@ -301,7 +301,7 @@ public static class ExtensionMethods
         this Result<IEnumerable<TSuccess>, TFailure> result,
         TNew seed,
         Func<TSuccess, Result<TNew, TFailure>> func,
-        Func<TNew, TNew, TNew> aggregator = null!) =>
+        Func<TNew, TNew, TNew>? aggregator = null) =>
         result.Then(inners =>
         {
             aggregator ??= ((i, j) => j);
@@ -324,26 +324,26 @@ public static class ExtensionMethods
     public static async Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess, TFailure>(
         this Task<Result<IEnumerable<TSuccess>, TFailure>> result,
         TNew seed,
-        Func<TSuccess, Task<Result<TNew, TFailure>>> func,
-        Func<TNew, TNew, TNew> aggregator = null!)
+        Func<TSuccess, Task<Result<TNew, TFailure>>> mapper,
+        Func<TNew, TNew, TNew>? aggregator = null)
     {
-        return await (await result).AggregateAsync(seed, func, aggregator);
+        return await (await result).AggregateAsync(seed, mapper, aggregator);
     }
     
     public static async Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess, TFailure>(
         this Task<Result<IEnumerable<TSuccess>, TFailure>> result,
         TNew seed,
-        Func<TSuccess, Result<TNew, TFailure>> func,
-        Func<TNew, TNew, TNew> aggregator = null!)
+        Func<TSuccess, Result<TNew, TFailure>> mapper,
+        Func<TNew, TNew, TNew>? aggregator = null)
     {
-        return (await result).Aggregate(seed, func, aggregator);
+        return (await result).Aggregate(seed, mapper, aggregator);
     }
     
     public static Task<Result<TNew, TFailure>> AggregateAsync<TNew, TSuccess,  TFailure>(
         this Result<IEnumerable<TSuccess>, TFailure> result,
         TNew seed,
-        Func<TSuccess, Task<Result<TNew, TFailure>>> func,
-        Func<TNew, TNew, TNew> aggregator = null!) =>
+        Func<TSuccess, Task<Result<TNew, TFailure>>> mapper,
+        Func<TNew, TNew, TNew>? aggregator = null) =>
         result.ThenAsync(async inners =>
         {
             aggregator ??= ((i, j) => j);
@@ -351,7 +351,7 @@ public static class ExtensionMethods
 
             foreach (var inner in inners)
             {
-                var funcResult = await func(inner);
+                var funcResult = await mapper(inner);
                 if (funcResult is IFailure<TFailure> fail)
                 {
                     return (Result<TNew, TFailure>)fail;
