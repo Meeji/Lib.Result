@@ -36,4 +36,14 @@ public static class TaskExtensionMethods
                     bindingFunc,
                     failure => Task.FromResult(Result.Failure<TNew, TFailure>(failure)));
     }
+    
+    public static async Task<Result<TNew, TFailure>> ThenAsync<TSuccess, TFailure, TNew>(
+        this Task<Result<TSuccess, TFailure>> task,
+        Func<TSuccess, Result<TNew, TFailure>> bindingFunc)
+    {
+        var result = await task;
+        return result.Do(
+            bindingFunc,
+            failure => failure);
+    }
 }
