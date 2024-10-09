@@ -263,11 +263,17 @@ public static class ExtensionMethods
         where TSuccess : class => result.ThenAsync(s =>
         s is null ? replaceWith : Result.Success<TSuccess, TFailure>(s));
 
-    public static void OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action) 
-        => result.Do(action, _ => { });
+    public static Result<TSuccess, TFailure> OnSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> action)
+    {
+        result.Do(action, _ => { });
+        return result;
+    }
 
-    public static void OnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> action) 
-        => result.Do(_ => { }, action);
+    public static Result<TSuccess, TFailure> OnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> action)
+    {
+        result.Do(_ => { }, action);
+        return result;
+    }
 
     public static bool TryGetSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess value)
     {
